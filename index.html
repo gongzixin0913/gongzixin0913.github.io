@@ -426,12 +426,13 @@ input[type=file].hidden-input{display:none}
    STATE
    ═══════════════════════════════════════ */
 let CONFIG = null;
+let DATA = null;
 let currentFilter = '全部';
 let currentTagFilter = '';
 let currentLightboxIndex = -1;
 let filteredPhotos = [];
 let isAdmin = false;
-let uploadQueue = []; // {id, file, blob, title, category, location, date, tags, notes, wide, tall, status}
+let uploadQueue = [];
 let queueIdCounter = 0;
 
 /* ═══════════════════════════════════════
@@ -439,10 +440,14 @@ let queueIdCounter = 0;
    ═══════════════════════════════════════ */
 (async function init() {
   try {
-    const r = await fetch('./config.json?' + Date.now());
-    CONFIG = await r.json();
+    const [cfgRes, dataRes] = await Promise.all([
+      fetch('./config.json?' + Date.now()),
+      fetch('./data.json?' + Date.now())
+    ]);
+    CONFIG = await cfgRes.json();
+    DATA = await dataRes.json();
   } catch(e) {
-    console.error('Failed to load config:', e);
+    console.error('Failed to load config/data:', e);
     document.getElementById('loading-screen').classList.add('hidden');
     return;
   }
@@ -456,7 +461,8 @@ let queueIdCounter = 0;
    SITE RENDER
    ═══════════════════════════════════════ */
 function renderSite() {
-  const { site, about, contact, categories, photos } = CONFIG;
+  const { site, about, contact, categories } = CONFIG;
+  const { photos } = DATA;
   document.title = site.logo.replace(' · ','-') + ' Photography';
   document.getElementById('navLogo').innerHTML = site.logo.replace('·','<span>·</span>');
   document.getElementById('heroEyebrow').textContent = site.eyebrow;
@@ -512,8 +518,8 @@ function renderSite() {
 function renderTagPills() {
   const allTags = new Set();
   const photosInCat = currentFilter === '全部'
-    ? CONFIG.photos
-    : CONFIG.photos.filter(p => p.category === currentFilter);
+    ? DATA.photos
+    : DATA.photos.filter(p => p.category === currentFilter);
   photosInCat.forEach(p => (p.tags||[]).forEach(t => allTags.add(t)));
 
   const el = document.getElementById('tagPills');
@@ -581,7 +587,7 @@ function filterGallery(cat, btn) {
 }
 
 function applyFilters() {
-  let photos = currentFilter === '全部' ? CONFIG.photos : CONFIG.photos.filter(p => p.category === currentFilter);
+  let photos = currentFilter === '全部' ? DATA.photos : DATA.photos.filter(p => p.category === currentFilter);
   if (currentTagFilter) photos = photos.filter(p => (p.tags||[]).includes(currentTagFilter));
   const items = document.querySelectorAll('.gallery-item');
   items.forEach(el => el.classList.add('hiding'));
@@ -819,7 +825,7 @@ function removeFromQueue(id) {
    ═══════════════════════════════════════ */
 function renderExistingPhotos() {
   const el = document.getElementById('existingList');
-  const photos = CONFIG.photos;
+  const photos = DATA.photos;
   document.getElementById('existingCount').textContent = `(${photos.length} 张)`;
 
   el.innerHTML = photos.map((p, i) => `
@@ -836,7 +842,7 @@ function renderExistingPhotos() {
 
 function deletePhoto(index) {
   if (!confirm('确定删除这张照片？（COS 上的文件不会被删除，仅从网站移除）')) return;
-  CONFIG.photos.splice(index, 1);
+  DATA.photos.splice(index, 1);
   renderExistingPhotos();
   adminLog('已从列表移除，点「发布到网站」后生效', 'info');
 }
@@ -902,7 +908,7 @@ async function publishAll() {
       if (item.wide) entry.wide = true;
       if (item.tall) entry.tall = true;
 
-      CONFIG.photos.unshift(entry);
+      DATA.photos.unshift(entry);
       item.status = 'done';
       if (statusEl) { statusEl.className='queue-status done'; statusEl.textContent='✓ 已上传'; }
       adminLog(`✓ ${item.file.name} 上传成功`, 'ok');
@@ -913,16 +919,16 @@ async function publishAll() {
     }
   }
 
-  // 2. Push updated config.json to GitHub
-  adminLog('正在更新 GitHub 上的 config.json ...', 'info');
-  const apiUrl = `https://api.github.com/repos/${CONFIG.admin.github_repo}/contents/config.json`;
+  // 2. Push updated data.json to GitHub
+  adminLog('正在更新 GitHub 上的 data.json ...', 'info');
+  const apiUrl = `https://api.github.com/repos/${CONFIG.admin.github_repo}/contents/data.json`;
 
   try {
     const res = await fetch(apiUrl, { headers: { Authorization: `token ${ghToken}` } });
     const data = await res.json();
     const sha = data.sha;
 
-    const newJson = JSON.stringify(CONFIG, null, 2);
+    const newJson = JSON.stringify(DATA, null, 2);
     const putRes = await fetch(apiUrl, {
       method: 'PUT',
       headers: { Authorization: `token ${ghToken}`, 'Content-Type': 'application/json' },
