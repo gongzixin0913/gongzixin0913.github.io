@@ -196,17 +196,33 @@ function selectFolder(path,el){selectedFolder=path;document.getElementById('targ
 function createFolder(){const path=document.getElementById('newFolder').value.trim().replace(/^\/|\/$/g,'');if(!path){log('请输入路径','err');return}const full=path+'/';COS_CLIENT.putObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:full,Body:''},(err)=>{if(err){log('创建失败: '+err.message,'err');return}log(`✓ ${full} 创建成功`,'ok');document.getElementById('newFolder').value='';selectedFolder=full;document.getElementById('targetFolder').textContent=full;refreshFolders()})}
 
 /* ═══ UPLOAD QUEUE ═══ */
-function addFiles(fileList){const cat=document.getElementById('bCat').value,loc=document.getElementById('bLoc').value,date=document.getElementById('bDate').value||new Date().getFullYear().toString(),tags=document.getElementById('bTags').value;Array.from(fileList).forEach(file=>{if(!file.type.startsWith('image/'))return;queue.push({id:++qid,file,blob:URL.createObjectURL(file),title:file.name.replace(/\.[^.]+$/,''),category:cat,location:loc,date,tags,notes:'',wide:false,tall:false,status:'pending',origSize:file.size,compressedSize:0})});renderQueue()}
+async function addFiles(fileList){
+  const cat=document.getElementById('bCat').value,loc=document.getElementById('bLoc').value,date=document.getElementById('bDate').value||new Date().getFullYear().toString(),tags=document.getElementById('bTags').value;
+  for(const file of Array.from(fileList)){
+    if(!file.type.startsWith('image/'))continue;
+    const blob=URL.createObjectURL(file);
+    // 读取图片尺寸，自动判断横竖
+    let wide=false,tall=false;
+    try{
+      const dim=await new Promise((res,rej)=>{const img=new Image();img.onload=()=>res({w:img.naturalWidth,h:img.naturalHeight});img.onerror=rej;img.src=blob});
+      const ratio=dim.w/dim.h;
+      if(ratio>=1.8)wide=true;       // 宽幅全景
+      else if(ratio<=0.75)tall=true;  // 竖拍
+    }catch(e){}
+    queue.push({id:++qid,file,blob,title:file.name.replace(/\.[^.]+$/,''),category:cat,location:loc,date,tags,notes:'',wide,tall,autoOrientation:true,status:'pending',origSize:file.size,compressedSize:0});
+  }
+  renderQueue();
+}
 
 function renderQueue(){
   const el=document.getElementById('queueList');if(!queue.length){el.innerHTML='';return}
   const catOpts=CONFIG.categories.map(c=>`<option value="${c}">${c}</option>`).join('');
-  el.innerHTML=queue.map(q=>`<div class="queue-item" id="qi-${q.id}"><img src="${q.blob}"><div class="fields"><div class="row"><div class="field" style="flex:2"><label>标题</label><input value="${esc(q.title)}" onchange="qUpd(${q.id},'title',this.value)"></div><div class="field"><label>分类</label><select onchange="qUpd(${q.id},'category',this.value)">${catOpts.replace('value="'+q.category+'"','value="'+q.category+'" selected')}</select></div></div><div class="row"><div class="field"><label>地点</label><input value="${esc(q.location)}" onchange="qUpd(${q.id},'location',this.value)"></div><div class="field"><label>年份</label><input value="${esc(q.date)}" onchange="qUpd(${q.id},'date',this.value)"></div><div class="field"><label>标签</label><input value="${esc(q.tags)}" onchange="qUpd(${q.id},'tags',this.value)"></div></div><div class="row"><div class="field" style="flex:3"><label>拍摄手记</label><textarea rows="2" onchange="qUpd(${q.id},'notes',this.value)">${esc(q.notes)}</textarea></div></div><div class="row"><label class="check"><input type="checkbox" ${q.wide?'checked':''} onchange="qUpd(${q.id},'wide',this.checked)"> 宽幅</label><label class="check"><input type="checkbox" ${q.tall?'checked':''} onchange="qUpd(${q.id},'tall',this.checked)"> 竖版</label><span style="font-size:.72rem;color:var(--muted);margin-left:auto">原始 ${fmtSize(q.origSize)}${q.compressedSize?' → '+fmtSize(q.compressedSize):''}</span></div><div class="q-status ${q.status}" id="qs-${q.id}">${statusText(q.status)}</div></div><button class="queue-remove" onclick="qDel(${q.id})">✕</button></div>`).join('');
+  el.innerHTML=queue.map(q=>`<div class="queue-item" id="qi-${q.id}"><img src="${q.blob}"><div class="fields"><div class="row"><div class="field" style="flex:2"><label>标题</label><input value="${esc(q.title)}" onchange="qUpd(${q.id},'title',this.value)"></div><div class="field"><label>分类</label><select onchange="qUpd(${q.id},'category',this.value)">${catOpts.replace('value="'+q.category+'"','value="'+q.category+'" selected')}</select></div></div><div class="row"><div class="field"><label>地点</label><input value="${esc(q.location)}" onchange="qUpd(${q.id},'location',this.value)"></div><div class="field"><label>年份</label><input value="${esc(q.date)}" onchange="qUpd(${q.id},'date',this.value)"></div><div class="field"><label>标签</label><input value="${esc(q.tags)}" onchange="qUpd(${q.id},'tags',this.value)"></div></div><div class="row"><div class="field" style="flex:3"><label>拍摄手记</label><textarea rows="2" onchange="qUpd(${q.id},'notes',this.value)">${esc(q.notes)}</textarea></div></div><div class="row"><label class="check"><input type="checkbox" ${q.wide?'checked':''} onchange="qUpd(${q.id},'wide',this.checked)"> 宽幅</label><label class="check"><input type="checkbox" ${q.tall?'checked':''} onchange="qUpd(${q.id},'tall',this.checked)"> 竖版</label>${q.autoOrientation&&(q.wide||q.tall)?'<span style="font-size:.68rem;color:var(--blue);margin-left:.3rem">(自动识别)</span>':''}<span style="font-size:.72rem;color:var(--muted);margin-left:auto">原始 ${fmtSize(q.origSize)}${q.compressedSize?' → '+fmtSize(q.compressedSize):''}</span></div><div class="q-status ${q.status}" id="qs-${q.id}">${statusText(q.status)}</div></div><button class="queue-remove" onclick="qDel(${q.id})">✕</button></div>`).join('');
 }
 function esc(s){return(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
 function fmtSize(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(0)+'KB';return(b/1048576).toFixed(1)+'MB'}
 function statusText(s){return{pending:'待上传',compressing:'🔄 压缩中...',uploading:'⏳ 上传中...',done:'✓ 完成',error:'✗ 失败'}[s]||s}
-function qUpd(id,k,v){const q=queue.find(x=>x.id===id);if(q)q[k]=v}
+function qUpd(id,k,v){const q=queue.find(x=>x.id===id);if(q){q[k]=v;if(k==='wide'||k==='tall')q.autoOrientation=false}}
 function qDel(id){queue=queue.filter(x=>x.id!==id);renderQueue()}
 function setQS(id,status){const el=document.getElementById('qs-'+id);if(el){el.className='q-status '+status;el.textContent=statusText(status)}}
 
