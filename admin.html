@@ -319,12 +319,21 @@ function batchEditCategory(){
   renderExisting();
 }
 
+/* 验证 COS 文件是否存在 */
+function cosHeadObject(key){
+  return new Promise((res,rej)=>{COS_CLIENT.headObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:key},(err,data)=>err?rej(err):res(data))});
+}
+
 async function batchMove(){
   if(!selectedIndices.size){log('请先勾选照片','err');return}
   if(!COS_CLIENT){log('请先保存 COS 凭证','err');return}
   const target=prompt('输入目标文件夹路径（如 photos/landscape/）：');
   if(!target)return;
   const folder=target.endsWith('/')?target:target+'/';
+
+  // 列出即将移动的文件名
+  const names=[...selectedIndices].map(i=>{const f=DATA.photos[i].file;return f.split('/').pop()});
+  if(!confirm(`确认将以下 ${names.length} 张照片移动到 ${folder}？\n\n${names.slice(0,10).join('\n')}${names.length>10?'\n...等共 '+names.length+' 张':''}`))return;
 
   log(`批量移动 ${selectedIndices.size} 张到 ${folder} ...`,'info');
   let moved=0;
@@ -335,23 +344,29 @@ async function batchMove(){
     const newKey=folder+fileName;
 
     try{
-      // COS copy
+      // 1. 复制到新位置
       await new Promise((res,rej)=>{COS_CLIENT.putObjectCopy({
         Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:newKey,
         CopySource:`${CONFIG.admin.cos_bucket}.cos.${CONFIG.admin.cos_region}.myqcloud.com/${oldKey}`
       },(err,data)=>err?rej(err):res(data))});
-      // COS delete old
+
+      // 2. 验证新文件确实存在
+      await cosHeadObject(newKey);
+      log(`✓ ${fileName} 已确认存在于新位置`,'ok');
+
+      // 3. 验证通过后才删除旧文件
       await new Promise((res,rej)=>{COS_CLIENT.deleteObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:oldKey},(err,data)=>err?rej(err):res(data))});
-      // Update data
+
+      // 4. 全部成功才更新路径
       DATA.photos[i].file='/'+newKey;
       moved++;
-      log(`✓ 移动: ${fileName}`,'ok');
+      log(`✓ 移动完成: ${fileName}`,'ok');
     }catch(e){
-      log(`✗ ${fileName} 移动失败: ${e.message}`,'err');
+      log(`✗ ${fileName} 移动失败: ${e.message}（原文件未删除）`,'err');
     }
   }
   if(moved>0)DATA._dirty=true;
-  log(`移动完成: ${moved}/${selectedIndices.size} 成功。发布后生效。`,'info');
+  log(`移动结果: ${moved}/${selectedIndices.size} 成功。${moved>0?'发布后生效。':''}`,'info');
   renderExisting();
 }
 
@@ -364,18 +379,29 @@ async function movePhoto(i){
   const fileName=oldKey.split('/').pop();
   const newKey=folder+fileName;
 
+  if(!confirm(`确认移动？\n\n「${p.title}」\n${oldKey}\n  ↓\n${newKey}`))return;
+
   log(`移动: ${oldKey} → ${newKey}`,'info');
   try{
+    // 1. 复制
     await new Promise((res,rej)=>{COS_CLIENT.putObjectCopy({
       Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:newKey,
       CopySource:`${CONFIG.admin.cos_bucket}.cos.${CONFIG.admin.cos_region}.myqcloud.com/${oldKey}`
     },(err,data)=>err?rej(err):res(data))});
+
+    // 2. 验证新文件存在
+    await cosHeadObject(newKey);
+    log(`✓ 新文件已确认存在`,'ok');
+
+    // 3. 删除旧文件
     await new Promise((res,rej)=>{COS_CLIENT.deleteObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:oldKey},(err,data)=>err?rej(err):res(data))});
+
+    // 4. 更新路径
     DATA.photos[i].file='/'+newKey;
     DATA._dirty=true;
-    log(`✓ 移动成功`,'ok');
+    log(`✓ 移动成功，发布后生效`,'ok');
     renderExisting();
-  }catch(e){log(`✗ 移动失败: ${e.message}`,'err')}
+  }catch(e){log(`✗ 移动失败: ${e.message}（原文件未删除）`,'err')}
 }
 
 function batchDelete(){
