@@ -89,6 +89,7 @@ section{padding:5rem 2.5rem}
 .lightbox-info .lb-tags{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem}
 .lightbox-info .lb-tags span{font-size:.7rem;padding:.2rem .6rem;background:rgba(255,255,255,.06);border-radius:1rem;color:var(--text-dim)}
 .lightbox-info .lb-notes{font-size:.88rem;color:var(--text-dim);margin-top:.8rem;font-style:italic;line-height:1.6;font-family:var(--serif)}
+.lightbox-info .lb-exif{font-size:.75rem;color:var(--text-muted);margin-top:.6rem;letter-spacing:.02em}
 .lightbox-actions{display:flex;gap:.6rem;position:absolute;bottom:1.5rem;right:1.5rem}
 .lightbox-btn{padding:.5rem 1.2rem;font-size:.78rem;border:1px solid var(--border-strong);border-radius:var(--radius);background:rgba(255,255,255,.05);transition:all .25s}
 .lightbox-btn:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
@@ -155,7 +156,7 @@ footer{text-align:center;padding:2rem;font-size:.72rem;color:var(--text-muted);l
   <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">‹</button>
   <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">›</button>
   <div class="lightbox-img-wrap"><div class="loader" id="lightboxLoader"></div><img id="lightboxImg" alt="" oncontextmenu="return false"></div>
-  <div class="lightbox-info"><h3 id="lightboxTitle"></h3><p class="lb-meta" id="lightboxMeta"></p><div class="lb-tags" id="lightboxTags"></div><p class="lb-notes" id="lightboxNotes"></p></div>
+  <div class="lightbox-info"><h3 id="lightboxTitle"></h3><p class="lb-meta" id="lightboxMeta"></p><div class="lb-tags" id="lightboxTags"></div><p class="lb-notes" id="lightboxNotes"></p><div class="lb-exif" id="lightboxExif"></div></div>
   <div class="lightbox-actions"><button class="lightbox-btn" onclick="showCopyright()">📥 获取原图</button></div>
 </div>
 
@@ -296,6 +297,14 @@ function openLB(i){
   document.getElementById('lightboxMeta').textContent=`${p.location} · ${p.date} · ${getCategory(p)}`;
   document.getElementById('lightboxTags').innerHTML=(p.tags||[]).map(t=>`<span>${t}</span>`).join('');
   const n=document.getElementById('lightboxNotes');n.textContent=p.notes||'';n.style.display=p.notes?'':'none';
+  // EXIF
+  const exEl=document.getElementById('lightboxExif');
+  const ex=p.exif;
+  if(ex&&ex!==false){
+    const parts=[ex.make,ex.model,ex.aperture,ex.shutter,ex.iso?'ISO '+ex.iso:'',ex.focal].filter(Boolean);
+    exEl.textContent=parts.length?'📷 '+parts.join(' · '):'';
+    exEl.style.display=parts.length?'':'none';
+  }else{exEl.style.display='none'}
   document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';
 }
 function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';currentLightboxIndex=-1}
