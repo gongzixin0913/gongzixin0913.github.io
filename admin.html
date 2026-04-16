@@ -15,7 +15,7 @@
 .btn-p{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}.btn-p:hover{background:var(--accent-d)}.btn-p:disabled{opacity:.5;cursor:not-allowed}
 .btn-danger{border-color:var(--red);color:var(--red)}.btn-danger:hover{background:rgba(239,83,80,.1)}
 .btn-sm{padding:.25rem .7rem;font-size:.75rem}
-.wrap{max-width:860px;margin:0 auto;padding:1.5rem}
+.wrap{max-width:900px;margin:0 auto;padding:1.5rem}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;margin-bottom:1.2rem}
 .card h2{font-size:.95rem;color:var(--accent);margin-bottom:.8rem;font-weight:500}
 .card .hint{font-size:.78rem;color:var(--muted);margin-bottom:.8rem}
@@ -23,59 +23,96 @@
 .field{flex:1;min-width:120px}.field label{display:block;font-size:.7rem;color:var(--muted);margin-bottom:.25rem;letter-spacing:.04em;text-transform:uppercase}
 .field input,.field select,.field textarea{width:100%;padding:.5rem .7rem;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:var(--r);font-family:inherit;font-size:.85rem;transition:border-color .2s}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent)}
-.field textarea{resize:vertical;min-height:50px;line-height:1.5}
+.field textarea{resize:vertical;min-height:60px;line-height:1.5}
 .check{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--dim);cursor:pointer;white-space:nowrap}.check input{width:auto;margin:0}
+.hidden{display:none!important}
+
+/* Auth */
 .auth-box{max-width:360px;margin:15vh auto;text-align:center;padding:2rem}.auth-box h2{font-size:1.2rem;margin-bottom:.3rem}.auth-box p{font-size:.85rem;color:var(--muted);margin-bottom:1.2rem}
 .auth-box input{text-align:center;letter-spacing:.15em;padding:.7rem;font-size:1rem}
 .auth-box .err{font-size:.8rem;color:var(--red);margin-top:.5rem;min-height:1.2em}
 .auth-box button{margin-top:.8rem;padding:.6rem 2rem;background:var(--accent);color:#000;font-weight:600;border-radius:var(--r);font-size:.9rem}
-.upload-zone{border:2px dashed var(--border);border-radius:var(--r2);padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:all .3s}
-.upload-zone:hover,.upload-zone.over{border-color:var(--accent);background:var(--accent-s)}
-.upload-zone .icon{font-size:2.2rem;margin-bottom:.3rem;opacity:.4}.upload-zone p{color:var(--muted);font-size:.88rem}.upload-zone small{color:var(--muted);font-size:.72rem;opacity:.7}
-.hidden{display:none!important}
+
+/* Collapsible */
+.collapsible-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.collapsible-header .toggle-icon{font-size:.8rem;color:var(--muted);transition:transform .2s}
+.collapsible-header .toggle-icon.collapsed{transform:rotate(-90deg)}
+.collapsible-body{overflow:hidden;transition:max-height .3s ease,opacity .3s;max-height:500px;opacity:1}
+.collapsible-body.collapsed{max-height:0;opacity:0;margin:0;padding:0}
+.cred-status{font-size:.72rem;color:var(--green);margin-left:.5rem}
+
+/* Tabs */
+.tab-bar{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.tab-btn{padding:.7rem 1.5rem;font-size:.88rem;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.03em}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-page{display:none}.tab-page.active{display:block}
+
+/* Folder tree */
 .folder-tree{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;font-family:var(--mono);font-size:.82rem;max-height:220px;overflow-y:auto;margin-bottom:.8rem;line-height:1.8}
 .folder-tree .f-node{cursor:pointer;padding:.1rem .4rem;border-radius:3px;transition:background .15s;display:block}.folder-tree .f-node:hover{background:rgba(255,255,255,.05)}.folder-tree .f-node.selected{background:var(--accent-s);color:var(--accent)}
 .folder-tree .f-indent{color:var(--muted);user-select:none}
+
+/* Quality */
 .quality-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
 .q-opt{padding:.4rem 1rem;font-size:.8rem;border:1px solid var(--border);border-radius:2rem;color:var(--dim);transition:all .2s}.q-opt:hover{border-color:var(--border2);color:var(--text)}.q-opt.active{border-color:var(--accent);color:var(--accent);background:var(--accent-s)}.q-opt small{opacity:.6;margin-left:.3rem}
-.queue-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;margin-bottom:.6rem;display:grid;grid-template-columns:90px 1fr 30px;gap:.8rem;align-items:start}
-.queue-item img{width:90px;height:60px;object-fit:cover;border-radius:3px;background:var(--bg3)}
+
+/* Upload zone */
+.upload-zone{border:2px dashed var(--border);border-radius:var(--r2);padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:all .3s}
+.upload-zone:hover,.upload-zone.over{border-color:var(--accent);background:var(--accent-s)}
+.upload-zone .icon{font-size:2.2rem;margin-bottom:.3rem;opacity:.4}.upload-zone p{color:var(--muted);font-size:.88rem}.upload-zone small{color:var(--muted);font-size:.72rem;opacity:.7}
+
+/* Queue - larger preview */
+.queue-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1rem;margin-bottom:.8rem;display:grid;grid-template-columns:160px 1fr 30px;gap:1rem;align-items:start}
+.queue-item .q-thumb{width:160px;height:110px;object-fit:cover;border-radius:4px;background:var(--bg3)}
 .queue-item .fields{display:flex;flex-direction:column;gap:.4rem}.queue-item .fields .row{margin-bottom:0}
 .queue-remove{color:var(--muted);font-size:1.1rem;padding:.2rem;transition:color .2s;text-align:right}.queue-remove:hover{color:var(--red)}
 .q-status{font-size:.72rem;margin-top:.2rem;font-family:var(--mono)}
 .q-status.pending{color:var(--muted)}.q-status.compressing{color:var(--blue)}.q-status.uploading{color:var(--yellow)}.q-status.done{color:var(--green)}.q-status.error{color:var(--red)}
+
+/* Log */
 .log{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;font-family:var(--mono);font-size:.78rem;max-height:220px;overflow-y:auto}
 .log .ok{color:var(--green)}.log .err{color:var(--red)}.log .info{color:var(--dim)}.log div{padding:.12rem 0;border-bottom:1px solid rgba(255,255,255,.02)}
 
-/* ═══ EXISTING PHOTOS (enhanced) ═══ */
-.ex-toolbar{display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;padding:.5rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r)}
-.ex-toolbar .sel-count{font-size:.8rem;color:var(--accent);margin-right:auto}
-.ex-item{display:flex;align-items:flex-start;gap:.7rem;padding:.6rem 0;border-bottom:1px solid var(--border);transition:background .15s}
-.ex-item:hover{background:rgba(255,255,255,.01)}
-.ex-item .ex-check{margin-top:.3rem;flex-shrink:0}
-.ex-item .ex-check input{width:16px;height:16px;accent-color:var(--accent)}
-.ex-item .ex-thumb{width:60px;height:42px;object-fit:cover;border-radius:3px;background:var(--bg3);flex-shrink:0}
-.ex-item .ex-info{flex:1;min-width:0}
-.ex-item .ex-info .t{font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ex-item .ex-info .m{font-size:.7rem;color:var(--muted)}
-.ex-item .ex-info .m-path{font-size:.68rem;color:var(--muted);font-family:var(--mono);opacity:.7;margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ex-item .ex-actions{display:flex;gap:.3rem;flex-shrink:0;margin-top:.1rem}
+/* ═══ EDIT PAGE ═══ */
+.edit-toolbar{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;padding:.6rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r)}
+.edit-toolbar .sel-count{font-size:.82rem;color:var(--accent);margin-right:auto}
 
-/* Edit panel */
-.ex-edit{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;margin:.4rem 0 .2rem 0;animation:slideDown .2s ease-out}
-@keyframes slideDown{from{opacity:0;max-height:0}to{opacity:1;max-height:500px}}
-.ex-edit .row{margin-bottom:.4rem}
+.edit-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);margin-bottom:.8rem;overflow:hidden}
+.edit-item-header{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;cursor:pointer;transition:background .15s}
+.edit-item-header:hover{background:rgba(255,255,255,.02)}
+.edit-item-header .ei-check{flex-shrink:0}
+.edit-item-header .ei-check input{width:16px;height:16px;accent-color:var(--accent)}
+.edit-item-header .ei-thumb{width:80px;height:55px;object-fit:cover;border-radius:4px;background:var(--bg3);flex-shrink:0}
+.edit-item-header .ei-info{flex:1;min-width:0}
+.edit-item-header .ei-info .t{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.edit-item-header .ei-info .m{font-size:.72rem;color:var(--muted)}
+.edit-item-header .ei-info .m-path{font-size:.68rem;color:var(--muted);font-family:var(--mono);opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.edit-item-header .ei-actions{display:flex;gap:.3rem;flex-shrink:0}
+.edit-item-header .ei-expand{font-size:.8rem;color:var(--muted);transition:transform .2s}
 
-/* Batch action bar */
-.batch-bar{position:sticky;bottom:0;background:rgba(17,17,17,.97);backdrop-filter:blur(12px);border-top:1px solid var(--accent);padding:.8rem 1.5rem;display:none;gap:.6rem;align-items:center;flex-wrap:wrap;z-index:5}
-.batch-bar.visible{display:flex}
-.batch-bar .bb-label{font-size:.82rem;color:var(--accent);margin-right:auto;font-weight:500}
-.batch-bar select,.batch-bar input{padding:.35rem .6rem;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:var(--r);font-size:.82rem}
+/* Expanded edit panel - larger preview */
+.edit-panel{display:none;padding:1rem;border-top:1px solid var(--border);background:var(--bg2)}
+.edit-panel.open{display:block}
+.edit-panel-inner{display:grid;grid-template-columns:220px 1fr;gap:1.2rem}
+.edit-panel .ep-preview{width:220px;border-radius:var(--r);overflow:hidden;background:var(--bg3)}
+.edit-panel .ep-preview img{width:100%;display:block}
+.edit-panel .ep-fields{display:flex;flex-direction:column;gap:.5rem}
+.edit-panel .ep-fields .row{margin-bottom:0}
+.edit-panel .ep-move{margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
 
-@media(max-width:640px){.wrap{padding:1rem}.queue-item{grid-template-columns:60px 1fr 24px}.queue-item img{width:60px;height:42px}.row{flex-direction:column;gap:.4rem}.field{min-width:100%}.ex-item .ex-thumb{width:45px;height:32px}}
+@media(max-width:640px){
+  .wrap{padding:1rem}
+  .queue-item{grid-template-columns:100px 1fr 24px}.queue-item .q-thumb{width:100px;height:70px}
+  .row{flex-direction:column;gap:.4rem}.field{min-width:100%}
+  .edit-panel-inner{grid-template-columns:1fr}.edit-panel .ep-preview{width:100%;max-height:200px}
+  .tab-btn{padding:.6rem 1rem;font-size:.82rem}
+}
 </style>
 </head>
 <body>
+
+<!-- ═══ AUTH ═══ -->
 <div id="authScreen" class="auth-box card">
   <h2>📷 作者后台</h2><p>请输入管理密码</p>
   <div class="field"><input type="password" id="pwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
@@ -83,72 +120,99 @@
   <div style="margin-top:1rem"><a href="./index.html" style="font-size:.82rem;color:var(--muted)">← 返回网站</a></div>
 </div>
 
+<!-- ═══ MAIN ═══ -->
 <div id="adminMain" class="hidden">
-  <div class="top-bar"><h1>📷 <span>作者后台</span></h1><div class="top-bar-r"><a href="./index.html" class="btn">← 网站</a><button class="btn btn-p" id="publishBtn" onclick="publish()">发布到网站</button></div></div>
-  <div class="wrap">
-    <!-- Creds -->
-    <div class="card">
-      <h2>🔑 凭证设置</h2><p class="hint">仅保存在本设备浏览器。</p>
-      <div class="row"><div class="field"><label>GitHub Token</label><input type="password" id="ghToken" placeholder="ghp_..."></div></div>
-      <div class="row"><div class="field"><label>腾讯云 SecretId</label><input type="password" id="cosId" placeholder="AKID..."></div><div class="field"><label>腾讯云 SecretKey</label><input type="password" id="cosKey" placeholder=""></div></div>
-      <button class="btn" style="margin-top:.5rem" onclick="saveCred()">保存凭证</button><span id="credOk" class="hidden" style="font-size:.75rem;color:var(--green);margin-left:.5rem">✓ 已保存</span>
+  <div class="top-bar">
+    <h1>📷 <span>作者后台</span></h1>
+    <div class="top-bar-r">
+      <a href="./index.html" class="btn">← 网站</a>
+      <button class="btn btn-p" id="publishBtn" onclick="publish()">发布到网站</button>
     </div>
-
-    <!-- Upload -->
-    <div class="card">
-      <h2>📤 上传照片</h2>
-      <p class="hint"><strong>① 选择 COS 目标文件夹</strong></p>
-      <div class="folder-tree" id="folderTree">加载中...</div>
-      <div class="row"><div class="field"><label>新建文件夹路径</label><input type="text" id="newFolder" placeholder="如：photos/travel/japan2025"></div><div style="display:flex;align-items:flex-end;gap:.4rem"><button class="btn" onclick="createFolder()">创建</button><button class="btn" onclick="refreshFolders()">刷新</button></div></div>
-      <p class="hint" style="margin-top:.4rem">当前目标：<strong id="targetFolder" style="color:var(--accent)">photos/</strong></p>
-      <p class="hint" style="margin-top:1rem"><strong>② 上传画质</strong></p>
-      <div class="quality-bar" id="qualityBar">
-        <button class="q-opt" data-w="2400" data-q="90" onclick="setQuality(this)">超高<small>2400px/90%</small></button>
-        <button class="q-opt active" data-w="1600" data-q="85" onclick="setQuality(this)">高质量<small>1600px/85%</small></button>
-        <button class="q-opt" data-w="1200" data-q="75" onclick="setQuality(this)">标准<small>1200px/75%</small></button>
-        <button class="q-opt" data-w="800" data-q="65" onclick="setQuality(this)">经济<small>800px/65%</small></button>
-      </div>
-      <p class="hint"><strong>③ 批量默认值</strong></p>
-      <div class="row"><div class="field"><label>分类</label><select id="bCat"></select></div><div class="field"><label>地点</label><input type="text" id="bLoc" placeholder="如：贵州"></div><div class="field"><label>年份</label><input type="text" id="bDate" placeholder="2026"></div></div>
-      <div class="row"><div class="field"><label>标签（逗号分隔）</label><input type="text" id="bTags" placeholder="如：日落, 长焦"></div></div>
-      <p class="hint" style="margin-top:1rem"><strong>④ 选择照片</strong></p>
-      <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()"><div class="icon">📁</div><p>点击选择 或 拖拽到此处</p><small>支持 JPG / PNG，可多选。上传前自动压缩。</small></div>
-      <input type="file" id="fileIn" class="hidden" accept="image/jpeg,image/png" multiple>
-      <div id="queueList" style="margin-top:.8rem"></div>
-    </div>
-
-    <!-- Log -->
-    <div class="card"><h2>📋 操作日志</h2><div class="log" id="log"><div class="info">等待操作...</div></div></div>
-
-    <!-- Existing Photos (enhanced) -->
-    <div class="card">
-      <h2>📂 已有照片 <span id="exCount" style="color:var(--muted);font-weight:300"></span></h2>
-      <p class="hint">勾选多张可批量修改分类/标签/存储位置。单张点「编辑」展开详细修改。改完点「发布到网站」生效。</p>
-      <div class="ex-toolbar" id="exToolbar">
-        <label class="check"><input type="checkbox" id="exSelectAll" onchange="toggleSelectAll(this.checked)"> 全选</label>
-        <span class="sel-count" id="selCount">已选 0 张</span>
-        <button class="btn btn-sm" onclick="batchEditTags()">批量改标签</button>
-        <button class="btn btn-sm" onclick="batchEditCategory()">批量改分类</button>
-        <button class="btn btn-sm" onclick="batchMove()">批量移动</button>
-        <button class="btn btn-sm btn-danger" onclick="batchDelete()">批量删除</button>
-      </div>
-      <div id="exList" style="max-height:600px;overflow-y:auto"></div>
-    </div>
-
-    <div style="text-align:center;padding:2rem 0"><button class="btn btn-danger" onclick="clearCred()">退出登录（清除本地凭证）</button></div>
   </div>
+  <div class="wrap">
 
-  <!-- Batch action bar (sticky bottom) -->
-  <div class="batch-bar" id="batchBar">
-    <span class="bb-label" id="bbLabel">已选 0 张</span>
+    <!-- Collapsible Credentials -->
+    <div class="card" id="credCard">
+      <div class="collapsible-header" onclick="toggleCred()">
+        <h2 style="margin-bottom:0">🔑 凭证设置 <span class="cred-status" id="credStatus"></span></h2>
+        <span class="toggle-icon" id="credToggle">▼</span>
+      </div>
+      <div class="collapsible-body" id="credBody">
+        <p class="hint" style="margin-top:.6rem">仅保存在本设备浏览器。</p>
+        <div class="row"><div class="field"><label>GitHub Token</label><input type="password" id="ghToken" placeholder="ghp_..."></div></div>
+        <div class="row"><div class="field"><label>腾讯云 SecretId</label><input type="password" id="cosId" placeholder="AKID..."></div><div class="field"><label>腾讯云 SecretKey</label><input type="password" id="cosKey" placeholder=""></div></div>
+        <button class="btn" style="margin-top:.5rem" onclick="saveCred()">保存凭证</button>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('upload',this)">📤 上传照片</button>
+      <button class="tab-btn" onclick="switchTab('edit',this)">✏️ 管理照片 <span id="editCount" style="font-size:.72rem;color:var(--muted)"></span></button>
+    </div>
+
+    <!-- ═══ TAB: UPLOAD ═══ -->
+    <div class="tab-page active" id="tab-upload">
+      <div class="card">
+        <h2>① 选择 COS 目标文件夹</h2>
+        <div class="folder-tree" id="folderTree">点击「加载」获取文件夹列表</div>
+        <div class="row"><div class="field"><label>新建文件夹</label><input type="text" id="newFolder" placeholder="如：photos/travel/japan2025"></div><div style="display:flex;align-items:flex-end;gap:.4rem"><button class="btn" onclick="createFolder()">创建</button><button class="btn" id="loadFolderBtn" onclick="refreshFolders()">加载</button></div></div>
+        <p class="hint" style="margin-top:.4rem">当前目标：<strong id="targetFolder" style="color:var(--accent)">photos/</strong></p>
+      </div>
+
+      <div class="card">
+        <h2>② 上传画质</h2>
+        <div class="quality-bar">
+          <button class="q-opt" data-w="2400" data-q="90" onclick="setQuality(this)">超高<small>2400px/90%</small></button>
+          <button class="q-opt active" data-w="1600" data-q="85" onclick="setQuality(this)">高质量<small>1600px/85%</small></button>
+          <button class="q-opt" data-w="1200" data-q="75" onclick="setQuality(this)">标准<small>1200px/75%</small></button>
+          <button class="q-opt" data-w="800" data-q="65" onclick="setQuality(this)">经济<small>800px/65%</small></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>③ 批量默认值</h2>
+        <div class="row"><div class="field"><label>分类</label><select id="bCat"></select></div><div class="field"><label>地点</label><input type="text" id="bLoc" placeholder="如：贵州"></div><div class="field"><label>年份</label><input type="text" id="bDate" placeholder="2026"></div></div>
+        <div class="row"><div class="field"><label>标签（逗号分隔）</label><input type="text" id="bTags" placeholder="如：日落, 长焦"></div></div>
+      </div>
+
+      <div class="card">
+        <h2>④ 选择照片</h2>
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()"><div class="icon">📁</div><p>点击选择 或 拖拽到此处</p><small>支持 JPG / PNG，可多选。上传前自动压缩。</small></div>
+        <input type="file" id="fileIn" class="hidden" accept="image/jpeg,image/png" multiple>
+        <div id="queueList" style="margin-top:1rem"></div>
+      </div>
+
+      <div class="card"><h2>📋 上传日志</h2><div class="log" id="log"><div class="info">等待操作...</div></div></div>
+    </div>
+
+    <!-- ═══ TAB: EDIT ═══ -->
+    <div class="tab-page" id="tab-edit">
+      <div class="card">
+        <div class="edit-toolbar">
+          <label class="check"><input type="checkbox" id="editSelectAll" onchange="toggleSelectAll(this.checked)"> 全选</label>
+          <span class="sel-count" id="selCount">已选 0 张</span>
+          <button class="btn btn-sm" onclick="batchEditTags()">批量改标签</button>
+          <button class="btn btn-sm" onclick="batchEditCategory()">批量改分类</button>
+          <button class="btn btn-sm" onclick="batchMove()">批量移动</button>
+          <button class="btn btn-sm btn-danger" onclick="batchDelete()">批量删除</button>
+        </div>
+
+        <div id="editList"></div>
+      </div>
+
+      <div class="card"><h2>📋 操作日志</h2><div class="log" id="editLog"><div class="info">等待操作...</div></div></div>
+    </div>
+
+    <div style="text-align:center;padding:1.5rem 0"><button class="btn btn-danger" onclick="clearCred()">退出登录（清除本地凭证）</button></div>
   </div>
 </div>
 
 <script>
-let CONFIG=null,DATA=null,COS_CLIENT=null,queue=[],qid=0;
-let uploadMaxWidth=1600,uploadQuality=0.85,selectedFolder='photos/';
-let selectedIndices=new Set(); // indices of selected existing photos
-let editingIndex=-1; // which photo's edit panel is open
+let CONFIG=null,DATA=null,COS_CLIENT=null;
+let queue=[],qid=0,uploadMaxWidth=1600,uploadQuality=0.85,selectedFolder='photos/';
+let selectedIndices=new Set(),expandedIndex=-1;
+let foldersLoaded=false,foldersList=[];
 
 (async function(){
   const[c,d]=await Promise.all([fetch('./config.json?'+Date.now()),fetch('./data.json?'+Date.now())]);
@@ -163,37 +227,73 @@ async function login(){const h=await sha256(document.getElementById('pwdInput').
 function initAdmin(){
   const t=localStorage.getItem('zx_gh_token'),i=localStorage.getItem('zx_cos_id'),k=localStorage.getItem('zx_cos_key');
   if(t)document.getElementById('ghToken').value=t;if(i)document.getElementById('cosId').value=i;if(k)document.getElementById('cosKey').value=k;
+  // Auto-collapse creds if already saved
+  if(t&&i&&k){
+    document.getElementById('credStatus').textContent='✓ 已配置';
+    toggleCred(); // collapse
+    initCOS(i,k);
+  }
   document.getElementById('bCat').innerHTML=CONFIG.categories.map(c=>`<option value="${c}">${c}</option>`).join('');
-  if(i&&k){initCOS(i,k);refreshFolders()}
+  document.getElementById('editCount').textContent=`(${DATA.photos.length})`;
+  // Setup drag/drop
   const zone=document.getElementById('dropZone'),fin=document.getElementById('fileIn');
   zone.ondragover=e=>{e.preventDefault();zone.classList.add('over')};zone.ondragleave=()=>zone.classList.remove('over');
   zone.ondrop=e=>{e.preventDefault();zone.classList.remove('over');addFiles(e.dataTransfer.files)};
   fin.onchange=()=>{addFiles(fin.files);fin.value=''};
-  renderExisting();
+}
+
+/* ═══ CREDENTIALS (collapsible) ═══ */
+function toggleCred(){
+  const body=document.getElementById('credBody'),icon=document.getElementById('credToggle');
+  body.classList.toggle('collapsed');icon.classList.toggle('collapsed');
 }
 function initCOS(id,key){COS_CLIENT=new COS({SecretId:id,SecretKey:key})}
-function saveCred(){localStorage.setItem('zx_gh_token',document.getElementById('ghToken').value);localStorage.setItem('zx_cos_id',document.getElementById('cosId').value);localStorage.setItem('zx_cos_key',document.getElementById('cosKey').value);initCOS(document.getElementById('cosId').value,document.getElementById('cosKey').value);refreshFolders();const ok=document.getElementById('credOk');ok.classList.remove('hidden');setTimeout(()=>ok.classList.add('hidden'),2000)}
+function saveCred(){
+  localStorage.setItem('zx_gh_token',document.getElementById('ghToken').value);
+  localStorage.setItem('zx_cos_id',document.getElementById('cosId').value);
+  localStorage.setItem('zx_cos_key',document.getElementById('cosKey').value);
+  initCOS(document.getElementById('cosId').value,document.getElementById('cosKey').value);
+  document.getElementById('credStatus').textContent='✓ 已配置';
+  toggleCred(); // collapse after save
+  foldersLoaded=false; // allow re-fetch
+}
 function clearCred(){localStorage.removeItem('zx_gh_token');localStorage.removeItem('zx_cos_id');localStorage.removeItem('zx_cos_key');location.reload()}
+
+/* ═══ TABS ═══ */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='edit')renderEditList();
+}
 
 /* ═══ QUALITY ═══ */
 function setQuality(btn){document.querySelectorAll('.q-opt').forEach(b=>b.classList.remove('active'));btn.classList.add('active');uploadMaxWidth=parseInt(btn.dataset.w);uploadQuality=parseInt(btn.dataset.q)/100;log(`画质: ${btn.dataset.w}px / ${btn.dataset.q}%`,'info')}
 
-/* ═══ IMAGE COMPRESSION ═══ */
+/* ═══ COMPRESSION ═══ */
 function compressImage(file,maxW,quality){
-  return new Promise((res,rej)=>{const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=Math.round(h*(maxW/w));w=maxW}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);c.toBlob(b=>b?res(b):rej(new Error('Compress fail')),'image/jpeg',quality)};img.onerror=()=>rej(new Error('Load fail'));img.src=e.target.result};reader.onerror=()=>rej(new Error('Read fail'));reader.readAsDataURL(file)})
+  return new Promise((res,rej)=>{const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=Math.round(h*(maxW/w));w=maxW}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);c.toBlob(b=>b?res(b):rej(new Error('压缩失败')),'image/jpeg',quality)};img.onerror=()=>rej(new Error('图片加载失败'));img.src=e.target.result};reader.onerror=()=>rej(new Error('读取失败'));reader.readAsDataURL(file)})
 }
 
-/* ═══ TREE FOLDERS ═══ */
-async function refreshFolders(){if(!COS_CLIENT)return;log('加载文件夹...','info');try{const p=await listAllPrefixes('');renderTree(p);log(`${p.length} 个文件夹`,'ok')}catch(e){log('加载失败: '+e.message,'err')}}
+/* ═══ FOLDERS (lazy load, cached) ═══ */
+async function refreshFolders(){
+  if(!COS_CLIENT){log('请先保存 COS 凭证','err');return}
+  const btn=document.getElementById('loadFolderBtn');btn.textContent='加载中...';btn.disabled=true;
+  try{foldersList=await listAllPrefixes('');renderTree(foldersList);foldersLoaded=true;log(`${foldersList.length} 个文件夹`,'ok')}
+  catch(e){log('加载失败: '+e.message,'err')}
+  btn.textContent='刷新';btn.disabled=false;
+}
 async function listAllPrefixes(prefix){const result=[];const data=await cosList(prefix,'/');for(const p of(data.CommonPrefixes||[])){result.push(p.Prefix);result.push(...await listAllPrefixes(p.Prefix))}return result}
 function cosList(prefix,delimiter){return new Promise((res,rej)=>{COS_CLIENT.getBucket({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Prefix:prefix,Delimiter:delimiter},(err,data)=>err?rej(err):res(data))})}
 function renderTree(prefixes){
   const el=document.getElementById('folderTree');
-  if(!prefixes.length){el.innerHTML='<span style="color:var(--muted)">暂无文件夹</span>';return}
+  if(!prefixes.length){el.innerHTML='<span style="color:var(--muted)">暂无文件夹，请先创建</span>';return}
   el.innerHTML=prefixes.map(p=>{const parts=p.replace(/\/$/,'').split('/');const d=parts.length-1;const name=parts[parts.length-1]+'/';const indent=d>0?'│  '.repeat(d-1)+'├─ ':'';return`<span class="f-node${p===selectedFolder?' selected':''}" onclick="selectFolder('${p}',this)"><span class="f-indent">${indent}</span>📁 ${name}</span>`}).join('');
 }
 function selectFolder(path,el){selectedFolder=path;document.getElementById('targetFolder').textContent=path;document.querySelectorAll('.f-node').forEach(n=>n.classList.remove('selected'));if(el)el.classList.add('selected')}
-function createFolder(){const path=document.getElementById('newFolder').value.trim().replace(/^\/|\/$/g,'');if(!path){log('请输入路径','err');return}const full=path+'/';COS_CLIENT.putObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:full,Body:''},(err)=>{if(err){log('创建失败: '+err.message,'err');return}log(`✓ ${full} 创建成功`,'ok');document.getElementById('newFolder').value='';selectedFolder=full;document.getElementById('targetFolder').textContent=full;refreshFolders()})}
+function createFolder(){const path=document.getElementById('newFolder').value.trim().replace(/^\/|\/$/g,'');if(!path){log('请输入路径','err');return}const full=path+'/';COS_CLIENT.putObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:full,Body:''},(err)=>{if(err){log('创建失败: '+err.message,'err');return}log(`✓ ${full} 创建成功`,'ok');document.getElementById('newFolder').value='';selectedFolder=full;document.getElementById('targetFolder').textContent=full;foldersLoaded=false;refreshFolders()})}
+function getFolderOptions(){if(!foldersList.length)return'<option value="photos/">photos/</option>';return foldersList.map(f=>`<option value="${f}">${f}</option>`).join('')}
 
 /* ═══ UPLOAD QUEUE ═══ */
 async function addFiles(fileList){
@@ -201,23 +301,16 @@ async function addFiles(fileList){
   for(const file of Array.from(fileList)){
     if(!file.type.startsWith('image/'))continue;
     const blob=URL.createObjectURL(file);
-    // 读取图片尺寸，自动判断横竖
     let wide=false,tall=false;
-    try{
-      const dim=await new Promise((res,rej)=>{const img=new Image();img.onload=()=>res({w:img.naturalWidth,h:img.naturalHeight});img.onerror=rej;img.src=blob});
-      const ratio=dim.w/dim.h;
-      if(ratio>=1.8)wide=true;       // 宽幅全景
-      else if(ratio<=0.75)tall=true;  // 竖拍
-    }catch(e){}
+    try{const dim=await new Promise((res,rej)=>{const img=new Image();img.onload=()=>res({w:img.naturalWidth,h:img.naturalHeight});img.onerror=rej;img.src=blob});const r=dim.w/dim.h;if(r>=1.8)wide=true;else if(r<=0.75)tall=true}catch(e){}
     queue.push({id:++qid,file,blob,title:file.name.replace(/\.[^.]+$/,''),category:cat,location:loc,date,tags,notes:'',wide,tall,autoOrientation:true,status:'pending',origSize:file.size,compressedSize:0});
   }
   renderQueue();
 }
-
 function renderQueue(){
   const el=document.getElementById('queueList');if(!queue.length){el.innerHTML='';return}
   const catOpts=CONFIG.categories.map(c=>`<option value="${c}">${c}</option>`).join('');
-  el.innerHTML=queue.map(q=>`<div class="queue-item" id="qi-${q.id}"><img src="${q.blob}"><div class="fields"><div class="row"><div class="field" style="flex:2"><label>标题</label><input value="${esc(q.title)}" onchange="qUpd(${q.id},'title',this.value)"></div><div class="field"><label>分类</label><select onchange="qUpd(${q.id},'category',this.value)">${catOpts.replace('value="'+q.category+'"','value="'+q.category+'" selected')}</select></div></div><div class="row"><div class="field"><label>地点</label><input value="${esc(q.location)}" onchange="qUpd(${q.id},'location',this.value)"></div><div class="field"><label>年份</label><input value="${esc(q.date)}" onchange="qUpd(${q.id},'date',this.value)"></div><div class="field"><label>标签</label><input value="${esc(q.tags)}" onchange="qUpd(${q.id},'tags',this.value)"></div></div><div class="row"><div class="field" style="flex:3"><label>拍摄手记</label><textarea rows="2" onchange="qUpd(${q.id},'notes',this.value)">${esc(q.notes)}</textarea></div></div><div class="row"><label class="check"><input type="checkbox" ${q.wide?'checked':''} onchange="qUpd(${q.id},'wide',this.checked)"> 宽幅</label><label class="check"><input type="checkbox" ${q.tall?'checked':''} onchange="qUpd(${q.id},'tall',this.checked)"> 竖版</label>${q.autoOrientation&&(q.wide||q.tall)?'<span style="font-size:.68rem;color:var(--blue);margin-left:.3rem">(自动识别)</span>':''}<span style="font-size:.72rem;color:var(--muted);margin-left:auto">原始 ${fmtSize(q.origSize)}${q.compressedSize?' → '+fmtSize(q.compressedSize):''}</span></div><div class="q-status ${q.status}" id="qs-${q.id}">${statusText(q.status)}</div></div><button class="queue-remove" onclick="qDel(${q.id})">✕</button></div>`).join('');
+  el.innerHTML=queue.map(q=>`<div class="queue-item" id="qi-${q.id}"><img src="${q.blob}" class="q-thumb"><div class="fields"><div class="row"><div class="field" style="flex:2"><label>标题</label><input value="${esc(q.title)}" onchange="qUpd(${q.id},'title',this.value)"></div><div class="field"><label>分类</label><select onchange="qUpd(${q.id},'category',this.value)">${catOpts.replace('value="'+q.category+'"','value="'+q.category+'" selected')}</select></div></div><div class="row"><div class="field"><label>地点</label><input value="${esc(q.location)}" onchange="qUpd(${q.id},'location',this.value)"></div><div class="field"><label>年份</label><input value="${esc(q.date)}" onchange="qUpd(${q.id},'date',this.value)"></div><div class="field"><label>标签</label><input value="${esc(q.tags)}" onchange="qUpd(${q.id},'tags',this.value)"></div></div><div class="row"><div class="field" style="flex:3"><label>拍摄手记</label><textarea rows="2" onchange="qUpd(${q.id},'notes',this.value)">${esc(q.notes)}</textarea></div></div><div class="row"><label class="check"><input type="checkbox" ${q.wide?'checked':''} onchange="qUpd(${q.id},'wide',this.checked)"> 宽幅</label><label class="check"><input type="checkbox" ${q.tall?'checked':''} onchange="qUpd(${q.id},'tall',this.checked)"> 竖版</label>${q.autoOrientation&&(q.wide||q.tall)?'<span style="font-size:.68rem;color:var(--blue);margin-left:.3rem">(自动识别)</span>':''}<span style="font-size:.72rem;color:var(--muted);margin-left:auto">原始 ${fmtSize(q.origSize)}${q.compressedSize?' → '+fmtSize(q.compressedSize):''}</span></div><div class="q-status ${q.status}" id="qs-${q.id}">${statusText(q.status)}</div></div><button class="queue-remove" onclick="qDel(${q.id})">✕</button></div>`).join('');
 }
 function esc(s){return(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
 function fmtSize(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(0)+'KB';return(b/1048576).toFixed(1)+'MB'}
@@ -227,213 +320,139 @@ function qDel(id){queue=queue.filter(x=>x.id!==id);renderQueue()}
 function setQS(id,status){const el=document.getElementById('qs-'+id);if(el){el.className='q-status '+status;el.textContent=statusText(status)}}
 
 /* ═══════════════════════════════════════
-   EXISTING PHOTOS (enhanced)
+   EDIT PAGE (独立界面)
    ═══════════════════════════════════════ */
-function renderExisting(){
-  const el=document.getElementById('exList');
-  document.getElementById('exCount').textContent=`(${DATA.photos.length} 张)`;
-  selectedIndices.clear(); editingIndex=-1; updateSelCount();
-  document.getElementById('exSelectAll').checked=false;
-
-  const catOpts=CONFIG.categories.map(c=>`<option value="${c}">${c}</option>`).join('');
+function renderEditList(){
+  const el=document.getElementById('editList');
+  selectedIndices.clear();expandedIndex=-1;updateSelCount();
+  document.getElementById('editSelectAll').checked=false;
+  document.getElementById('editCount').textContent=`(${DATA.photos.length})`;
 
   el.innerHTML=DATA.photos.map((p,i)=>{
-    const isEditing=editingIndex===i;
     const tagsStr=(p.tags||[]).join(', ');
-    let editPanel='';
-    return`
-    <div class="ex-item" id="exi-${i}">
-      <div class="ex-check"><input type="checkbox" data-idx="${i}" onchange="toggleSelect(${i},this.checked)"></div>
-      <img class="ex-thumb" src="${CONFIG.cos_base}${p.file}?imageMogr2/thumbnail/120x" onerror="this.style.opacity='.2'">
-      <div class="ex-info">
-        <div class="t">${p.title}</div>
-        <div class="m">${p.category} · ${p.location} · ${p.date}${tagsStr?' · '+tagsStr:''}</div>
-        <div class="m-path">${p.file}</div>
-        <div id="edit-${i}"></div>
+    return`<div class="edit-item" id="ei-${i}">
+      <div class="edit-item-header" onclick="toggleExpand(${i})">
+        <div class="ei-check" onclick="event.stopPropagation()"><input type="checkbox" data-idx="${i}" onchange="toggleSelect(${i},this.checked)"></div>
+        <img class="ei-thumb" src="${CONFIG.cos_base}${p.file}?imageMogr2/thumbnail/160x" onerror="this.style.opacity='.2'">
+        <div class="ei-info"><div class="t">${p.title}</div><div class="m">${p.category} · ${p.location} · ${p.date}${tagsStr?' · '+tagsStr:''}</div><div class="m-path">${p.file}</div></div>
+        <div class="ei-actions" onclick="event.stopPropagation()">
+          <button class="btn btn-sm btn-danger" onclick="delPhoto(${i})">删除</button>
+        </div>
+        <span class="ei-expand">▶</span>
       </div>
-      <div class="ex-actions">
-        <button class="btn btn-sm" onclick="toggleEdit(${i})">编辑</button>
-        <button class="btn btn-sm btn-danger" onclick="delPhoto(${i})">删除</button>
-      </div>
+      <div class="edit-panel" id="ep-${i}"></div>
     </div>`;
   }).join('');
 }
 
-function toggleEdit(i){
-  const container=document.getElementById('edit-'+i);
-  if(editingIndex===i){container.innerHTML='';editingIndex=-1;return}
-  if(editingIndex>=0){const old=document.getElementById('edit-'+editingIndex);if(old)old.innerHTML=''}
-  editingIndex=i;
+function toggleExpand(i){
+  // Close previous
+  if(expandedIndex>=0&&expandedIndex!==i){
+    const oldPanel=document.getElementById('ep-'+expandedIndex);
+    if(oldPanel){oldPanel.classList.remove('open');oldPanel.innerHTML=''}
+    const oldArrow=document.querySelector('#ei-'+expandedIndex+' .ei-expand');
+    if(oldArrow)oldArrow.textContent='▶';
+  }
+
+  const panel=document.getElementById('ep-'+i);
+  const arrow=document.querySelector('#ei-'+i+' .ei-expand');
+
+  if(expandedIndex===i){
+    panel.classList.remove('open');panel.innerHTML='';
+    arrow.textContent='▶';expandedIndex=-1;return;
+  }
+
+  expandedIndex=i;arrow.textContent='▼';
   const p=DATA.photos[i];
   const catOpts=CONFIG.categories.map(c=>`<option value="${c}"${c===p.category?' selected':''}>${c}</option>`).join('');
-  container.innerHTML=`
-  <div class="ex-edit">
-    <div class="row"><div class="field"><label>标题</label><input value="${esc(p.title)}" onchange="exUpd(${i},'title',this.value)"></div><div class="field"><label>分类</label><select onchange="exUpd(${i},'category',this.value)">${catOpts}</select></div></div>
-    <div class="row"><div class="field"><label>地点</label><input value="${esc(p.location)}" onchange="exUpd(${i},'location',this.value)"></div><div class="field"><label>年份</label><input value="${esc(p.date)}" onchange="exUpd(${i},'date',this.value)"></div></div>
-    <div class="row"><div class="field"><label>标签（逗号分隔）</label><input value="${esc((p.tags||[]).join(', '))}" onchange="exUpdTags(${i},this.value)"></div></div>
-    <div class="row"><div class="field"><label>拍摄手记</label><textarea rows="2" onchange="exUpd(${i},'notes',this.value)">${esc(p.notes||'')}</textarea></div></div>
-    <div class="row"><label class="check"><input type="checkbox" ${p.wide?'checked':''} onchange="exUpd(${i},'wide',this.checked)"> 宽幅</label><label class="check"><input type="checkbox" ${p.tall?'checked':''} onchange="exUpd(${i},'tall',this.checked)"> 竖版</label></div>
-    <p class="hint" style="margin-top:.5rem">移动存储位置：</p>
-    <div class="row"><div class="field"><label>目标文件夹</label><select id="moveSel-${i}">${getAllFolderOptions()}</select></div><button class="btn btn-sm" style="align-self:flex-end" onclick="movePhoto(${i})">移动</button></div>
+
+  panel.innerHTML=`<div class="edit-panel-inner">
+    <div class="ep-preview"><img src="${CONFIG.cos_base}${p.file}?imageMogr2/thumbnail/440x" onerror="this.style.opacity='.3'"></div>
+    <div class="ep-fields">
+      <div class="row"><div class="field"><label>标题</label><input value="${esc(p.title)}" onchange="exUpd(${i},'title',this.value)"></div></div>
+      <div class="row"><div class="field"><label>分类</label><select onchange="exUpd(${i},'category',this.value)">${catOpts}</select></div><div class="field"><label>地点</label><input value="${esc(p.location)}" onchange="exUpd(${i},'location',this.value)"></div><div class="field"><label>年份</label><input value="${esc(p.date)}" onchange="exUpd(${i},'date',this.value)"></div></div>
+      <div class="row"><div class="field"><label>标签（逗号分隔）</label><input value="${esc((p.tags||[]).join(', '))}" onchange="exUpdTags(${i},this.value)"></div></div>
+      <div class="row"><div class="field"><label>拍摄手记</label><textarea rows="3" onchange="exUpd(${i},'notes',this.value)">${esc(p.notes||'')}</textarea></div></div>
+      <div class="row"><label class="check"><input type="checkbox" ${p.wide?'checked':''} onchange="exUpd(${i},'wide',this.checked)"> 宽幅</label><label class="check"><input type="checkbox" ${p.tall?'checked':''} onchange="exUpd(${i},'tall',this.checked)"> 竖版</label></div>
+      <div class="ep-move">
+        <p class="hint" style="margin-bottom:.4rem"><strong>移动存储位置</strong></p>
+        <div class="row"><div class="field"><label>目标文件夹</label><select id="moveSel-${i}">${getFolderOptions()}</select></div><button class="btn btn-sm" style="align-self:flex-end" onclick="movePhoto(${i})">移动</button></div>
+      </div>
+    </div>
   </div>`;
+  panel.classList.add('open');
 }
 
-function exUpd(i,k,v){DATA.photos[i][k]=v;DATA._dirty=true}
+function exUpd(i,k,v){DATA.photos[i][k]=v;DATA._dirty=true;
+  // Live update header text
+  const el=document.querySelector('#ei-'+i+' .t');
+  if(el&&k==='title')el.textContent=v;
+}
 function exUpdTags(i,v){DATA.photos[i].tags=v.split(/[,，]/).map(t=>t.trim()).filter(Boolean);DATA._dirty=true}
 
-function getAllFolderOptions(){
-  const tree=document.getElementById('folderTree');
-  const nodes=tree.querySelectorAll('.f-node');
-  let opts='';
-  nodes.forEach(n=>{const p=n.onclick.toString().match(/'([^']+)'/);if(p)opts+=`<option value="${p[1]}">${p[1]}</option>`});
-  if(!opts)opts='<option value="photos/">photos/</option>';
-  return opts;
-}
-
 /* ═══ SELECT & BATCH ═══ */
-function toggleSelect(i,checked){
-  if(checked)selectedIndices.add(i);else selectedIndices.delete(i);
-  updateSelCount();
-}
-function toggleSelectAll(checked){
-  const boxes=document.querySelectorAll('.ex-check input');
-  boxes.forEach((b,idx)=>{b.checked=checked;if(checked)selectedIndices.add(idx);else selectedIndices.delete(idx)});
-  updateSelCount();
-}
-function updateSelCount(){
-  const n=selectedIndices.size;
-  document.getElementById('selCount').textContent=`已选 ${n} 张`;
-  document.getElementById('bbLabel').textContent=`已选 ${n} 张`;
-  document.getElementById('batchBar').classList.toggle('visible',n>0);
-}
+function toggleSelect(i,checked){if(checked)selectedIndices.add(i);else selectedIndices.delete(i);updateSelCount()}
+function toggleSelectAll(checked){document.querySelectorAll('.ei-check input').forEach((b,idx)=>{b.checked=checked;if(checked)selectedIndices.add(idx);else selectedIndices.delete(idx)});updateSelCount()}
+function updateSelCount(){document.getElementById('selCount').textContent=`已选 ${selectedIndices.size} 张`}
 
 function batchEditTags(){
-  if(!selectedIndices.size){log('请先勾选照片','err');return}
-  const input=prompt('输入新标签（逗号分隔）：\n留空表示清除标签，输入 +标签 表示追加');
+  if(!selectedIndices.size){editLog('请先勾选照片','err');return}
+  const input=prompt('输入新标签（逗号分隔）：\n留空 = 清除标签\n输入 +标签 = 追加不覆盖');
   if(input===null)return;
   const isAppend=input.startsWith('+');
   const newTags=(isAppend?input.substring(1):input).split(/[,，]/).map(t=>t.trim()).filter(Boolean);
-  selectedIndices.forEach(i=>{
-    if(isAppend){DATA.photos[i].tags=[...new Set([...(DATA.photos[i].tags||[]),...newTags])]}
-    else{DATA.photos[i].tags=newTags}
-  });
-  DATA._dirty=true;
-  log(`✓ 已修改 ${selectedIndices.size} 张照片的标签，发布后生效`,'ok');
-  renderExisting();
+  selectedIndices.forEach(i=>{DATA.photos[i].tags=isAppend?[...new Set([...(DATA.photos[i].tags||[]),...newTags])]:newTags});
+  DATA._dirty=true;editLog(`✓ ${selectedIndices.size} 张照片标签已修改`,'ok');renderEditList();
 }
-
 function batchEditCategory(){
-  if(!selectedIndices.size){log('请先勾选照片','err');return}
+  if(!selectedIndices.size){editLog('请先勾选照片','err');return}
   const cats=CONFIG.categories;
-  const input=prompt('选择分类（输入数字）：\n'+cats.map((c,i)=>`${i+1}. ${c}`).join('\n'));
-  if(!input)return;
-  const idx=parseInt(input)-1;
-  if(idx<0||idx>=cats.length){log('无效选择','err');return}
+  const input=prompt('选择分类：\n'+cats.map((c,i)=>`${i+1}. ${c}`).join('\n'));
+  if(!input)return;const idx=parseInt(input)-1;
+  if(idx<0||idx>=cats.length){editLog('无效选择','err');return}
   selectedIndices.forEach(i=>{DATA.photos[i].category=cats[idx]});
-  DATA._dirty=true;
-  log(`✓ 已将 ${selectedIndices.size} 张照片分类改为「${cats[idx]}」`,'ok');
-  renderExisting();
+  DATA._dirty=true;editLog(`✓ ${selectedIndices.size} 张 → 「${cats[idx]}」`,'ok');renderEditList();
 }
 
-/* 验证 COS 文件是否存在 */
-function cosHeadObject(key){
-  return new Promise((res,rej)=>{COS_CLIENT.headObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:key},(err,data)=>err?rej(err):res(data))});
-}
+/* ═══ MOVE (with confirm + verify) ═══ */
+function cosHeadObject(key){return new Promise((res,rej)=>{COS_CLIENT.headObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:key},(err,data)=>err?rej(err):res(data))})}
 
 async function batchMove(){
-  if(!selectedIndices.size){log('请先勾选照片','err');return}
-  if(!COS_CLIENT){log('请先保存 COS 凭证','err');return}
+  if(!selectedIndices.size){editLog('请先勾选照片','err');return}
+  if(!COS_CLIENT){editLog('请先保存 COS 凭证','err');return}
   const target=prompt('输入目标文件夹路径（如 photos/landscape/）：');
-  if(!target)return;
-  const folder=target.endsWith('/')?target:target+'/';
-
-  // 列出即将移动的文件名
-  const names=[...selectedIndices].map(i=>{const f=DATA.photos[i].file;return f.split('/').pop()});
-  if(!confirm(`确认将以下 ${names.length} 张照片移动到 ${folder}？\n\n${names.slice(0,10).join('\n')}${names.length>10?'\n...等共 '+names.length+' 张':''}`))return;
-
-  log(`批量移动 ${selectedIndices.size} 张到 ${folder} ...`,'info');
-  let moved=0;
+  if(!target)return;const folder=target.endsWith('/')?target:target+'/';
+  const names=[...selectedIndices].map(i=>DATA.photos[i].file.split('/').pop());
+  if(!confirm(`确认移动 ${names.length} 张到 ${folder}？\n\n${names.slice(0,8).join('\n')}${names.length>8?'\n...等 '+names.length+' 张':''}`))return;
+  editLog(`批量移动 → ${folder}`,'info');let moved=0;
   for(const i of selectedIndices){
-    const p=DATA.photos[i];
-    const oldKey=p.file.startsWith('/')?p.file.substring(1):p.file;
-    const fileName=oldKey.split('/').pop();
-    const newKey=folder+fileName;
-
+    const p=DATA.photos[i],oldKey=p.file.replace(/^\//,''),fileName=oldKey.split('/').pop(),newKey=folder+fileName;
     try{
-      // 1. 复制到新位置
-      await new Promise((res,rej)=>{COS_CLIENT.putObjectCopy({
-        Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:newKey,
-        CopySource:`${CONFIG.admin.cos_bucket}.cos.${CONFIG.admin.cos_region}.myqcloud.com/${oldKey}`
-      },(err,data)=>err?rej(err):res(data))});
-
-      // 2. 验证新文件确实存在
+      await new Promise((res,rej)=>{COS_CLIENT.putObjectCopy({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:newKey,CopySource:`${CONFIG.admin.cos_bucket}.cos.${CONFIG.admin.cos_region}.myqcloud.com/${oldKey}`},(e,d)=>e?rej(e):res(d))});
       await cosHeadObject(newKey);
-      log(`✓ ${fileName} 已确认存在于新位置`,'ok');
-
-      // 3. 验证通过后才删除旧文件
-      await new Promise((res,rej)=>{COS_CLIENT.deleteObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:oldKey},(err,data)=>err?rej(err):res(data))});
-
-      // 4. 全部成功才更新路径
-      DATA.photos[i].file='/'+newKey;
-      moved++;
-      log(`✓ 移动完成: ${fileName}`,'ok');
-    }catch(e){
-      log(`✗ ${fileName} 移动失败: ${e.message}（原文件未删除）`,'err');
-    }
+      await new Promise((res,rej)=>{COS_CLIENT.deleteObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:oldKey},(e,d)=>e?rej(e):res(d))});
+      DATA.photos[i].file='/'+newKey;moved++;editLog(`✓ ${fileName}`,'ok');
+    }catch(e){editLog(`✗ ${fileName}: ${e.message}（原文件未删除）`,'err')}
   }
   if(moved>0)DATA._dirty=true;
-  log(`移动结果: ${moved}/${selectedIndices.size} 成功。${moved>0?'发布后生效。':''}`,'info');
-  renderExisting();
+  editLog(`结果: ${moved}/${selectedIndices.size} 成功`,'info');renderEditList();
 }
 
 async function movePhoto(i){
-  if(!COS_CLIENT){log('请先保存 COS 凭证','err');return}
-  const sel=document.getElementById('moveSel-'+i);
-  const folder=sel.value;
-  const p=DATA.photos[i];
-  const oldKey=p.file.startsWith('/')?p.file.substring(1):p.file;
-  const fileName=oldKey.split('/').pop();
-  const newKey=folder+fileName;
-
+  if(!COS_CLIENT){editLog('请先保存凭证','err');return}
+  const folder=document.getElementById('moveSel-'+i).value,p=DATA.photos[i],oldKey=p.file.replace(/^\//,''),fileName=oldKey.split('/').pop(),newKey=folder+fileName;
   if(!confirm(`确认移动？\n\n「${p.title}」\n${oldKey}\n  ↓\n${newKey}`))return;
-
-  log(`移动: ${oldKey} → ${newKey}`,'info');
+  editLog(`移动: ${oldKey} → ${newKey}`,'info');
   try{
-    // 1. 复制
-    await new Promise((res,rej)=>{COS_CLIENT.putObjectCopy({
-      Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:newKey,
-      CopySource:`${CONFIG.admin.cos_bucket}.cos.${CONFIG.admin.cos_region}.myqcloud.com/${oldKey}`
-    },(err,data)=>err?rej(err):res(data))});
-
-    // 2. 验证新文件存在
-    await cosHeadObject(newKey);
-    log(`✓ 新文件已确认存在`,'ok');
-
-    // 3. 删除旧文件
-    await new Promise((res,rej)=>{COS_CLIENT.deleteObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:oldKey},(err,data)=>err?rej(err):res(data))});
-
-    // 4. 更新路径
-    DATA.photos[i].file='/'+newKey;
-    DATA._dirty=true;
-    log(`✓ 移动成功，发布后生效`,'ok');
-    renderExisting();
-  }catch(e){log(`✗ 移动失败: ${e.message}（原文件未删除）`,'err')}
+    await new Promise((res,rej)=>{COS_CLIENT.putObjectCopy({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:newKey,CopySource:`${CONFIG.admin.cos_bucket}.cos.${CONFIG.admin.cos_region}.myqcloud.com/${oldKey}`},(e,d)=>e?rej(e):res(d))});
+    await cosHeadObject(newKey);editLog('✓ 新文件已确认','ok');
+    await new Promise((res,rej)=>{COS_CLIENT.deleteObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:oldKey},(e,d)=>e?rej(e):res(d))});
+    DATA.photos[i].file='/'+newKey;DATA._dirty=true;editLog('✓ 移动成功','ok');renderEditList();
+  }catch(e){editLog(`✗ 失败: ${e.message}（原文件未删除）`,'err')}
 }
 
-function batchDelete(){
-  if(!selectedIndices.size)return;
-  if(!confirm(`确定删除选中的 ${selectedIndices.size} 张照片？`))return;
-  const sorted=[...selectedIndices].sort((a,b)=>b-a);
-  sorted.forEach(i=>DATA.photos.splice(i,1));
-  DATA._dirty=true;
-  log(`已移除 ${sorted.length} 张，发布后生效`,'info');
-  renderExisting();
-}
-
-function delPhoto(i){
-  if(!confirm('确定删除「'+DATA.photos[i].title+'」？'))return;
-  DATA.photos.splice(i,1);DATA._dirty=true;renderExisting();log('已移除，发布后生效','info');
-}
+function batchDelete(){if(!selectedIndices.size)return;if(!confirm(`确定删除 ${selectedIndices.size} 张？`))return;[...selectedIndices].sort((a,b)=>b-a).forEach(i=>DATA.photos.splice(i,1));DATA._dirty=true;editLog(`已移除 ${selectedIndices.size} 张`,'info');renderEditList()}
+function delPhoto(i){if(!confirm('确定删除「'+DATA.photos[i].title+'」？'))return;DATA.photos.splice(i,1);DATA._dirty=true;editLog('已移除','info');renderEditList()}
 
 /* ═══ PUBLISH ═══ */
 const u2b=s=>btoa(unescape(encodeURIComponent(s)));
@@ -444,29 +463,22 @@ async function publish(){
   if(!COS_CLIENT)initCOS(cosId,cosKey);
   const btn=document.getElementById('publishBtn');btn.disabled=true;btn.textContent='处理中...';
 
-  const folder=selectedFolder;
-  const pending=queue.filter(q=>q.status==='pending');
-  const successEntries=[];
-
+  const pending=queue.filter(q=>q.status==='pending'),successEntries=[];
   for(const item of pending){
-    setQS(item.id,'compressing');
-    log(`压缩: ${item.file.name} → ${uploadMaxWidth}px/${Math.round(uploadQuality*100)}%`,'info');
-    let uploadBlob;
-    try{uploadBlob=await compressImage(item.file,uploadMaxWidth,uploadQuality);item.compressedSize=uploadBlob.size;log(`${fmtSize(item.origSize)} → ${fmtSize(uploadBlob.size)}`,'ok')}
-    catch(e){item.status='error';setQS(item.id,'error');log(`✗ 压缩失败: ${e.message}`,'err');continue}
-
-    const cosPath=folder+Date.now()+'_'+item.title.replace(/[^a-zA-Z0-9\u4e00-\u9fff_-]/g,'')+'.jpg';
+    setQS(item.id,'compressing');log(`压缩: ${item.file.name}`,'info');
+    let blob;try{blob=await compressImage(item.file,uploadMaxWidth,uploadQuality);item.compressedSize=blob.size;log(`${fmtSize(item.origSize)} → ${fmtSize(blob.size)}`,'ok')}
+    catch(e){item.status='error';setQS(item.id,'error');log(`✗ 压缩失败`,'err');continue}
+    const cosPath=selectedFolder+Date.now()+'_'+item.title.replace(/[^a-zA-Z0-9\u4e00-\u9fff_-]/g,'')+'.jpg';
     setQS(item.id,'uploading');log(`上传: → ${cosPath}`,'info');
     try{
-      await new Promise((res,rej)=>{COS_CLIENT.putObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:cosPath,Body:uploadBlob},(err,data)=>err?rej(err):res(data))});
-      item.status='done';setQS(item.id,'done');log(`✓ 上传成功`,'ok');
+      await new Promise((res,rej)=>{COS_CLIENT.putObject({Bucket:CONFIG.admin.cos_bucket,Region:CONFIG.admin.cos_region,Key:cosPath,Body:blob},(e,d)=>e?rej(e):res(d))});
+      item.status='done';setQS(item.id,'done');log('✓ 上传成功','ok');
       const entry={file:'/'+cosPath,title:item.title,category:item.category,location:item.location,date:item.date,tags:item.tags?item.tags.split(/[,，]/).map(t=>t.trim()).filter(Boolean):[],notes:item.notes||''};
       if(item.wide)entry.wide=true;if(item.tall)entry.tall=true;
       successEntries.push(entry);
-    }catch(e){item.status='error';setQS(item.id,'error');log(`✗ 上传失败: ${e.message||JSON.stringify(e)}`,'err')}
+    }catch(e){item.status='error';setQS(item.id,'error');log(`✗ 上传失败: ${e.message}`,'err')}
     renderQueue();
   }
-
   successEntries.forEach(e=>DATA.photos.unshift(e));
 
   if(successEntries.length>0||DATA._dirty){
@@ -476,14 +488,16 @@ async function publish(){
       const res=await fetch(apiUrl,{headers:{Authorization:`token ${ghToken}`}});const gd=await res.json();
       const putRes=await fetch(apiUrl,{method:'PUT',headers:{Authorization:`token ${ghToken}`,'Content-Type':'application/json'},
         body:JSON.stringify({message:`[Admin] update (${new Date().toLocaleString('zh-CN')})`,content:u2b(JSON.stringify({photos:DATA.photos},null,2)),sha:gd.sha})});
-      if(putRes.ok){log('🎉 发布成功！','ok');DATA._dirty=false;queue=queue.filter(q=>q.status!=='done');renderQueue();renderExisting()}
-      else{throw new Error(await putRes.text())}
+      if(putRes.ok){log('🎉 发布成功！','ok');DATA._dirty=false;queue=queue.filter(q=>q.status!=='done');renderQueue();document.getElementById('editCount').textContent=`(${DATA.photos.length})`}
+      else throw new Error(await putRes.text());
     }catch(e){log('GitHub 失败: '+e.message,'err');successEntries.forEach(()=>DATA.photos.shift())}
-  }else if(pending.length===0&&!DATA._dirty){log('没有待处理的内容','info')}
+  }else if(!pending.length&&!DATA._dirty){log('没有待处理的内容','info')}
   btn.disabled=false;btn.textContent='发布到网站';
 }
 
+/* ═══ LOG (two separate logs) ═══ */
 function log(msg,type='info'){const el=document.getElementById('log');el.innerHTML+=`<div class="${type}">${msg}</div>`;el.scrollTop=el.scrollHeight}
+function editLog(msg,type='info'){const el=document.getElementById('editLog');el.innerHTML+=`<div class="${type}">${msg}</div>`;el.scrollTop=el.scrollHeight}
 </script>
 </body>
 </html>
