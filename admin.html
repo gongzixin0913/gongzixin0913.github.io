@@ -58,6 +58,16 @@
 .quality-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
 .q-opt{padding:.4rem 1rem;font-size:.8rem;border:1px solid var(--border);border-radius:2rem;color:var(--dim);transition:all .2s}.q-opt:hover{border-color:var(--border2);color:var(--text)}.q-opt.active{border-color:var(--accent);color:var(--accent);background:var(--accent-s)}.q-opt small{opacity:.6;margin-left:.3rem}
 
+/* Upload grid - 2 column compact */
+.upload-grid{display:grid;grid-template-columns:1fr 2fr;gap:1rem;margin-bottom:1rem}
+.upload-left{margin-bottom:0;align-self:start;position:sticky;top:60px}
+.upload-right{display:flex;flex-direction:column;gap:1rem}
+.upload-right .card{margin-bottom:0}
+.quality-bar-vert{flex-direction:column;gap:.4rem}
+.quality-bar-vert .q-opt{width:100%;text-align:left;padding:.5rem .9rem;display:flex;justify-content:space-between;align-items:center}
+.quality-bar-vert .q-opt small{margin-left:.5rem}
+@media(max-width:800px){.upload-grid{grid-template-columns:1fr}.upload-left{position:static}}
+
 /* Upload zone */
 .upload-zone{border:2px dashed var(--border);border-radius:var(--r2);padding:2.5rem 1.5rem;text-align:center;cursor:pointer;transition:all .3s}
 .upload-zone:hover,.upload-zone.over{border-color:var(--accent);background:var(--accent-s)}
@@ -189,36 +199,44 @@
 
     <!-- ═══ TAB: UPLOAD ═══ -->
     <div class="tab-page active" id="tab-upload">
-      <div class="card">
-        <h2>① 选择 COS 目标文件夹</h2>
-        <div class="folder-tree" id="folderTree">点击「加载」获取文件夹列表</div>
-        <div class="row"><div class="field"><label>新建文件夹</label><input type="text" id="newFolder" placeholder="如：photo/travel/japan2025"></div><div style="display:flex;align-items:flex-end;gap:.4rem"><button class="btn" onclick="createFolder()">创建</button><button class="btn" id="loadFolderBtn" onclick="refreshFolders()">加载</button></div></div>
-        <p class="hint" style="margin-top:.4rem">当前目标：<strong id="targetFolder" style="color:var(--accent)">photo/</strong></p>
-      </div>
+      <div class="upload-grid">
+        <!-- LEFT: folder + quality -->
+        <div class="card upload-left">
+          <h2>① 目标文件夹</h2>
+          <div class="folder-tree" id="folderTree">点击「加载」获取</div>
+          <div class="row"><div class="field"><label>新建文件夹</label><input type="text" id="newFolder" placeholder="如：photo/travel/japan"></div></div>
+          <div style="display:flex;gap:.4rem;margin-bottom:.6rem"><button class="btn btn-sm" onclick="createFolder()">创建</button><button class="btn btn-sm" id="loadFolderBtn" onclick="refreshFolders()">加载</button></div>
+          <p class="hint" style="margin:.4rem 0 1rem">当前：<strong id="targetFolder" style="color:var(--accent)">photo/</strong></p>
 
-      <div class="card">
-        <h2>② 上传画质</h2>
-        <div class="quality-bar">
-          <button class="q-opt" data-w="0" data-q="100" onclick="setQuality(this)">原图<small>不压缩</small></button>
-          <button class="q-opt" data-w="2400" data-q="90" onclick="setQuality(this)">超高<small>2400px/90%</small></button>
-          <button class="q-opt active" data-w="1600" data-q="85" onclick="setQuality(this)">高质量<small>1600px/85%</small></button>
-          <button class="q-opt" data-w="1200" data-q="75" onclick="setQuality(this)">标准<small>1200px/75%</small></button>
-          <button class="q-opt" data-w="800" data-q="65" onclick="setQuality(this)">经济<small>800px/65%</small></button>
+          <h2 style="margin-top:1rem">② 上传画质</h2>
+          <div class="quality-bar quality-bar-vert">
+            <button class="q-opt active" data-w="0" data-q="100" onclick="setQuality(this)">原图<small>不压缩</small></button>
+            <button class="q-opt" data-w="2400" data-q="90" onclick="setQuality(this)">超高<small>2400px/90%</small></button>
+            <button class="q-opt" data-w="1600" data-q="85" onclick="setQuality(this)">高质量<small>1600px/85%</small></button>
+            <button class="q-opt" data-w="1200" data-q="75" onclick="setQuality(this)">标准<small>1200px/75%</small></button>
+            <button class="q-opt" data-w="800" data-q="65" onclick="setQuality(this)">经济<small>800px/65%</small></button>
+          </div>
         </div>
-      </div>
 
-      <div class="card">
-        <h2>③ 批量默认值</h2>
-        <div class="row"><div class="field"><label>地点</label><input type="text" id="bLoc" placeholder="如：贵州"></div><div class="field"><label>年份</label><input type="text" id="bDate" placeholder="2026"></div></div>
-        <div class="row"><div class="field"><label>标签（逗号分隔）</label><input type="text" id="bTags" placeholder="如：日落, 长焦"></div></div>
-        <p class="hint">分类按 COS 目标文件夹自动确定，不需要在这里设置。</p>
-      </div>
+        <!-- RIGHT: defaults + upload -->
+        <div class="upload-right">
+          <div class="card">
+            <h2>③ 批量预设</h2>
+            <p class="hint">分类 = 当前选中的文件夹（自动）。其他字段留空时不会填入照片。</p>
+            <div class="row">
+              <div class="field"><label>地点</label><input type="text" id="bLoc" placeholder="留空则不设置"></div>
+              <div class="field"><label>时间</label><input type="text" id="bDate" placeholder="留空则不设置"></div>
+            </div>
+            <div class="row"><div class="field"><label>标签（逗号分隔）</label><input type="text" id="bTags" placeholder="留空则不设置"></div></div>
+          </div>
 
-      <div class="card">
-        <h2>④ 选择照片</h2>
-        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()"><div class="icon">📁</div><p>点击选择 或 拖拽到此处</p><small>支持 JPG / PNG，可多选。上传前自动压缩，EXIF 已本地读取。</small></div>
-        <input type="file" id="fileIn" class="hidden" accept="image/jpeg,image/png" multiple>
-        <div id="queueList" style="margin-top:1rem"></div>
+          <div class="card">
+            <h2>④ 选择照片</h2>
+            <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()"><div class="icon">📁</div><p>点击选择 或 拖拽到此处</p><small>支持 JPG / PNG，可多选</small></div>
+            <input type="file" id="fileIn" class="hidden" accept="image/jpeg,image/png" multiple>
+            <div id="queueList" style="margin-top:1rem"></div>
+          </div>
+        </div>
       </div>
 
       <div class="card"><h2>📋 上传日志</h2><div class="log" id="log"><div class="info">等待操作...</div></div></div>
@@ -355,7 +373,7 @@
 
 <script>
 let CONFIG=null,DATA=null,COS_CLIENT=null;
-let queue=[],qid=0,uploadMaxWidth=1600,uploadQuality=0.85,selectedFolder='photo/';
+let queue=[],qid=0,uploadMaxWidth=0,uploadQuality=1,selectedFolder='photo/';
 let selectedIndices=new Set();
 let currentDetailIndex=-1; // which photo is shown in the right panel
 let orphanFiles=[],orphanSelected=new Set(),orphanExpanded=-1;
