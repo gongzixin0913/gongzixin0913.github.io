@@ -215,7 +215,25 @@
           <button class="btn btn-sm btn-danger" onclick="batchDelete()">批量删除</button>
         </div>
 
-        <div id="editList"></div>
+        <!-- Filters -->
+        <div class="row" style="margin:.6rem 0;align-items:flex-end">
+          <div class="field" style="min-width:100px;flex:.6">
+            <label>分类筛选</label>
+            <select id="filterCat" onchange="renderEditList()"><option value="">全部分类</option></select>
+          </div>
+          <div class="field" style="min-width:100px;flex:.6">
+            <label>标签筛选</label>
+            <select id="filterTag" onchange="renderEditList()"><option value="">全部标签</option></select>
+          </div>
+          <div class="field" style="min-width:120px;flex:.8">
+            <label>文件夹筛选</label>
+            <select id="filterFolder" onchange="renderEditList()"><option value="">全部文件夹</option></select>
+          </div>
+          <div style="flex-shrink:0"><button class="btn btn-sm" onclick="clearFilters()">清除</button></div>
+        </div>
+        <div class="hint" id="filterInfo" style="margin-bottom:.6rem"></div>
+
+        <div id="editList" style="max-height:600px;overflow-y:auto"></div>
       </div>
 
       <!-- Orphan Scanner -->
@@ -236,7 +254,7 @@
             <button class="btn btn-sm" style="border-color:var(--green);color:var(--green)" onclick="batchAddOrphans()">批量添加到网站</button>
             <button class="btn btn-sm btn-danger" onclick="batchDeleteOrphans()">批量从 COS 删除</button>
           </div>
-          <div id="orphanList"></div>
+          <div id="orphanList" style="max-height:500px;overflow-y:auto"></div>
         </div>
       </div>
 
@@ -362,13 +380,65 @@ function setQS(id,status){const el=document.getElementById('qs-'+id);if(el){el.c
 /* ═══════════════════════════════════════
    EDIT PAGE (独立界面)
    ═══════════════════════════════════════ */
+let filteredEditIndices=[];
+
+function populateFilters(){
+  // Collect unique values from DATA, no COS requests
+  const cats=new Set(),tags=new Set(),folders=new Set();
+  DATA.photos.forEach(p=>{
+    if(p.category)cats.add(p.category);
+    (p.tags||[]).forEach(t=>tags.add(t));
+    const parts=p.file.replace(/^\//,'').split('/');
+    if(parts.length>1)folders.add(parts.slice(0,-1).join('/')+'/');
+  });
+
+  const catSel=document.getElementById('filterCat');
+  const curCat=catSel.value;
+  catSel.innerHTML='<option value="">全部分类</option>'+[...cats].sort().map(c=>`<option value="${c}"${c===curCat?' selected':''}>${c}</option>`).join('');
+
+  const tagSel=document.getElementById('filterTag');
+  const curTag=tagSel.value;
+  tagSel.innerHTML='<option value="">全部标签</option>'+[...tags].sort().map(t=>`<option value="${t}"${t===curTag?' selected':''}>${t}</option>`).join('');
+
+  const folderSel=document.getElementById('filterFolder');
+  const curFolder=folderSel.value;
+  folderSel.innerHTML='<option value="">全部文件夹</option>'+[...folders].sort().map(f=>`<option value="${f}"${f===curFolder?' selected':''}>${f}</option>`).join('');
+}
+
+function clearFilters(){
+  document.getElementById('filterCat').value='';
+  document.getElementById('filterTag').value='';
+  document.getElementById('filterFolder').value='';
+  renderEditList();
+}
+
 function renderEditList(){
+  populateFilters();
   const el=document.getElementById('editList');
   selectedIndices.clear();expandedIndex=-1;updateSelCount();
   document.getElementById('editSelectAll').checked=false;
   document.getElementById('editCount').textContent=`(${DATA.photos.length})`;
 
-  el.innerHTML=DATA.photos.map((p,i)=>{
+  // Apply filters
+  const fCat=document.getElementById('filterCat').value;
+  const fTag=document.getElementById('filterTag').value;
+  const fFolder=document.getElementById('filterFolder').value;
+
+  filteredEditIndices=[];
+  DATA.photos.forEach((p,i)=>{
+    if(fCat&&p.category!==fCat)return;
+    if(fTag&&!(p.tags||[]).includes(fTag))return;
+    if(fFolder){const pFolder=p.file.replace(/^\//,'').split('/').slice(0,-1).join('/')+'/';if(pFolder!==fFolder)return}
+    filteredEditIndices.push(i);
+  });
+
+  const info=document.getElementById('filterInfo');
+  if(fCat||fTag||fFolder){
+    info.textContent=`筛选结果: ${filteredEditIndices.length} / ${DATA.photos.length} 张`;
+  }else{info.textContent=''}
+
+  el.innerHTML=filteredEditIndices.map(i=>{
+    const p=DATA.photos[i];
     const tagsStr=(p.tags||[]).join(', ');
     return`<div class="edit-item" id="ei-${i}">
       <div class="edit-item-header" onclick="toggleExpand(${i})">
@@ -432,7 +502,15 @@ function exUpdTags(i,v){DATA.photos[i].tags=v.split(/[,，]/).map(t=>t.trim()).f
 
 /* ═══ SELECT & BATCH ═══ */
 function toggleSelect(i,checked){if(checked)selectedIndices.add(i);else selectedIndices.delete(i);updateSelCount()}
-function toggleSelectAll(checked){document.querySelectorAll('.ei-check input').forEach((b,idx)=>{b.checked=checked;if(checked)selectedIndices.add(idx);else selectedIndices.delete(idx)});updateSelCount()}
+function toggleSelectAll(checked){
+  const boxes=document.querySelectorAll('.ei-check input');
+  boxes.forEach(b=>{
+    b.checked=checked;
+    const idx=parseInt(b.dataset.idx);
+    if(checked)selectedIndices.add(idx);else selectedIndices.delete(idx);
+  });
+  updateSelCount();
+}
 function updateSelCount(){document.getElementById('selCount').textContent=`已选 ${selectedIndices.size} 张`}
 
 function batchEditTags(){
