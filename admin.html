@@ -222,12 +222,11 @@
         <div class="upload-right">
           <div class="card">
             <h2>③ 批量预设</h2>
-            <p class="hint">分类 = 当前选中的文件夹（自动）。其他字段留空时不会填入照片。</p>
-            <div class="row">
-              <div class="field"><label>地点</label><input type="text" id="bLoc" placeholder="留空则不设置"></div>
-              <div class="field"><label>时间</label><input type="text" id="bDate" placeholder="留空则不设置"></div>
-            </div>
-            <div class="row"><div class="field"><label>标签（逗号分隔）</label><input type="text" id="bTags" placeholder="留空则不设置"></div></div>
+            <p class="hint">分类 = 当前选中的文件夹（自动）。这些预设将应用到所有新加入的照片，选择后再添加照片。</p>
+
+            <div class="field"><label>地点（单选）</label><div class="chip-picker" id="presetLocPicker"></div></div>
+            <div class="field" style="margin-top:.5rem"><label>标签（多选）</label><div class="chip-picker" id="presetTagPicker"></div></div>
+            <div class="row" style="margin-top:.5rem"><div class="field"><label>时间（年 或 年-月）</label><input type="text" id="bDate" placeholder="留空则不设置"></div></div>
           </div>
 
           <div class="card">
@@ -374,6 +373,7 @@
 <script>
 let CONFIG=null,DATA=null,COS_CLIENT=null;
 let queue=[],qid=0,uploadMaxWidth=0,uploadQuality=1,selectedFolder='photo/';
+let presetLoc='', presetTags=new Set();
 let selectedIndices=new Set();
 let currentDetailIndex=-1; // which photo is shown in the right panel
 let orphanFiles=[],orphanSelected=new Set(),orphanExpanded=-1;
@@ -399,6 +399,7 @@ function initAdmin(){
   zone.ondragover=e=>{e.preventDefault();zone.classList.add('over')};zone.ondragleave=()=>zone.classList.remove('over');
   zone.ondrop=e=>{e.preventDefault();zone.classList.remove('over');addFiles(e.dataTransfer.files)};
   fin.onchange=()=>{addFiles(fin.files);fin.value=''};
+  renderPresets();
 }
 
 function toggleCred(){document.getElementById('credBody').classList.toggle('collapsed');document.getElementById('credToggle').classList.toggle('collapsed')}
@@ -414,6 +415,7 @@ function switchTab(name,btn){
   document.getElementById('tab-'+name).classList.add('active');
   if(name==='manage')renderManageList();
   if(name==='settings')initSettingsTab();
+  if(name==='upload')renderPresets();
 }
 
 /* ═══ QUALITY ═══ */
@@ -451,14 +453,39 @@ async function fetchExif(fileKey){const url=CONFIG.cos_base+'/'+fileKey.replace(
 function exifDateToYM(dt){if(!dt)return '';const m=String(dt).match(/^(\d{4})[:\-](\d{2})/);return m?`${m[1]}-${m[2]}`:''}
 
 /* ═══ UPLOAD QUEUE ═══ */
+/* ═══ UPLOAD PRESET PICKERS ═══ */
+function renderPresets(){
+  refreshTagPools();
+  // Location picker (single-select)
+  const locEl=document.getElementById('presetLocPicker');
+  if(!locEl)return;
+  const allLocs=getAllLocs();
+  const locChips=allLocs.map(l=>`<span class="chip${l===presetLoc?' single-active':''}" onclick="togglePresetLoc('${esc(l)}')">${l}</span>`).join('');
+  const uniqueLoc=presetLoc&&!allLocs.includes(presetLoc)?`<span class="chip single-active" onclick="togglePresetLoc('${esc(presetLoc)}')">${presetLoc}</span>`:'';
+  locEl.innerHTML=locChips+uniqueLoc+`<span class="chip chip-add" onclick="addPresetLoc()">+ 新建</span>`;
+
+  // Tag picker (multi-select)
+  const tagEl=document.getElementById('presetTagPicker');
+  const allTags=getAllTags();
+  const tagChips=allTags.map(t=>`<span class="chip${presetTags.has(t)?' active':''}" onclick="togglePresetTag('${esc(t)}')">${t}</span>`).join('');
+  const uniqueTags=[...presetTags].filter(t=>!allTags.includes(t));
+  const uniqueChips=uniqueTags.map(t=>`<span class="chip active" onclick="togglePresetTag('${esc(t)}')">${t}</span>`).join('');
+  tagEl.innerHTML=tagChips+uniqueChips+`<span class="chip chip-add" onclick="addPresetTag()">+ 新建</span>`;
+}
+function togglePresetLoc(l){presetLoc=presetLoc===l?'':l;renderPresets()}
+function togglePresetTag(t){if(presetTags.has(t))presetTags.delete(t);else presetTags.add(t);renderPresets()}
+function addPresetLoc(){const v=prompt('输入新地点：');if(!v||!v.trim())return;presetLoc=v.trim();renderPresets()}
+function addPresetTag(){const v=prompt('输入新标签（可逗号分隔多个）：');if(!v)return;v.split(/[,，]/).map(x=>x.trim()).filter(Boolean).forEach(t=>presetTags.add(t));renderPresets()}
+
 async function addFiles(fileList){
-  const loc=document.getElementById('bLoc').value,date=document.getElementById('bDate').value,tags=document.getElementById('bTags').value;
+  const date=document.getElementById('bDate').value;
+  const tagsStr=[...presetTags].join(', ');
   for(const file of Array.from(fileList)){
     if(!file.type.startsWith('image/'))continue;
     const blob=URL.createObjectURL(file);
     let wide=false,tall=false;
     try{const dim=await new Promise((res,rej)=>{const img=new Image();img.onload=()=>res({w:img.naturalWidth,h:img.naturalHeight});img.onerror=rej;img.src=blob});const r=dim.w/dim.h;if(r>=1.8)wide=true;else if(r<=0.75)tall=true}catch(e){}
-    queue.push({id:++qid,file,blob,title:file.name.replace(/\.[^.]+$/,''),location:loc,date,tags,notes:'',wide,tall,status:'pending',origSize:file.size,compressedSize:0});
+    queue.push({id:++qid,file,blob,title:file.name.replace(/\.[^.]+$/,''),location:presetLoc,date,tags:tagsStr,notes:'',wide,tall,status:'pending',origSize:file.size,compressedSize:0});
   }
   renderQueue();
 }
