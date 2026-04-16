@@ -1,8 +1,8 @@
 {
   "site": {
     "logo": "ZX · Labs",
-    "title": "用镜头记录时间的故事",
-    "subtitle": "每次快门，都是一次与世界对话",
+    "title": "用镜头记录光与影的故事",
+    "subtitle": "每一次快门都是一次与世界的对话",
     "eyebrow": "Photography Portfolio",
     "footer": "© 2026 ZX·Labs · Powered by GitHub Pages"
   },
@@ -47,7 +47,7 @@
   "contact": [
     {
       "icon": "📧",
-      "text": "邮箱1：gongzixin1999@outlook.com",
+      "text": "邮箱：gongzixin1999@outlook.com",
       "link": "mailto:gongzixin1999@outlook.com"
     },
     {
