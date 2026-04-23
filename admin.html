@@ -98,11 +98,10 @@
 .chip-input{display:inline-flex;align-items:center;gap:.2rem}
 .chip-input input{padding:.2rem .5rem;font-size:.75rem;background:var(--bg3);border:1px solid var(--accent);color:var(--text);border-radius:1rem;width:100px;outline:none}
 
-/* ═══ MANAGE: MASTER-DETAIL LAYOUT ═══ */
-.mgr-layout{display:grid;grid-template-columns:320px 1fr;gap:1rem;min-height:500px}
-.mgr-list{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;max-height:700px}
+/* ═══ MANAGE: ACCORDION LIST ═══ */
+.mgr-list-wrap{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .mgr-list-header{padding:.6rem .8rem;border-bottom:1px solid var(--border);font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
-.mgr-list-inner{flex:1;overflow-y:auto;padding:.3rem}
+.mgr-list-inner{max-height:700px;overflow-y:auto;padding:.3rem}
 
 .mgr-row{display:grid;grid-template-columns:24px 52px 1fr;gap:.5rem;padding:.35rem .4rem;align-items:center;cursor:pointer;border-radius:4px;transition:background .12s;border:1px solid transparent}
 .mgr-row:hover{background:rgba(255,255,255,.03)}
@@ -113,10 +112,11 @@
 .mgr-row .m-title{font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mgr-row .m-meta{font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.mgr-detail{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1rem;overflow-y:auto;max-height:700px}
-.mgr-detail.empty{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.88rem}
-.mgr-detail .mdet-preview{width:100%;max-height:280px;object-fit:contain;background:var(--bg3);border-radius:var(--r);margin-bottom:.8rem}
-.mgr-detail h3.mdet-title{font-size:1rem;margin-bottom:.3rem}
+/* Accordion expand panel */
+.mgr-expand{display:none;padding:1rem;border-top:1px solid var(--border);background:var(--bg2);margin:0 .3rem .5rem;border-radius:0 0 var(--r) var(--r)}
+.mgr-expand.open{display:block}
+.mgr-expand .mdet-preview{width:100%;max-height:400px;object-fit:contain;background:var(--bg3);border-radius:var(--r);margin-bottom:.8rem}
+.mgr-expand h3.mdet-title{font-size:1rem;margin-bottom:.3rem}
 .mdet-path{font-size:.7rem;color:var(--muted);font-family:var(--mono);margin-bottom:.8rem;word-break:break-all}
 
 .mgr-toolbar{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.5rem .7rem;margin-bottom:.8rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
@@ -146,10 +146,6 @@
 .progress-bar{height:100%;background:var(--accent);transition:width .3s;width:0}
 .progress-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;color:#000;font-weight:500}
 
-@media(max-width:900px){
-  .mgr-layout{grid-template-columns:1fr}
-  .mgr-list,.mgr-detail{max-height:none}
-}
 @media(max-width:640px){
   .wrap{padding:1rem}
   .queue-item{grid-template-columns:100px 1fr 24px}.queue-item .q-thumb{width:100px;height:70px}
@@ -262,12 +258,11 @@
         <div class="field" style="margin-bottom:.5rem"><label>地点筛选</label><div class="chip-picker" id="filterLocChips"></div></div>
         <div class="hint" id="filterInfo" style="margin-bottom:.6rem"></div>
 
-        <div class="mgr-layout">
-          <div class="mgr-list">
-            <div class="mgr-list-header"><span id="mgrListCount">0 张</span></div>
-            <div class="mgr-list-inner" id="mgrList"></div>
-          </div>
-          <div class="mgr-detail empty" id="mgrDetail">← 从左侧选择一张照片进行编辑</div>
+        <div id="batchPanel" class="hidden" style="margin-bottom:1rem"></div>
+
+        <div class="mgr-list-wrap">
+          <div class="mgr-list-header"><span id="mgrListCount">0 张</span></div>
+          <div class="mgr-list-inner" id="mgrList"></div>
         </div>
       </div>
 
@@ -593,57 +588,67 @@ function renderManageList(){
     const p=DATA.photos[i];
     const cat=getCat(p);
     const isActive=i===currentDetailIndex;
-    return`<div class="mgr-row${isActive?' active':''}" onclick="selectDetail(${i},event)">
+    return`<div class="mgr-row${isActive?' active':''}" id="mr-${i}" onclick="selectDetail(${i},event)">
       <div class="m-check" onclick="event.stopPropagation()"><input type="checkbox" data-idx="${i}" onchange="toggleSelect(${i},this.checked)"></div>
       <img class="m-thumb" src="${CONFIG.cos_base}${p.file}?imageMogr2/thumbnail/120x" loading="lazy" onerror="this.style.opacity='.2'">
       <div class="m-info">
         <div class="m-title">${p.title}</div>
         <div class="m-meta">${cat} · ${p.location||'-'} · ${p.date||'-'}${(p.tags||[]).length?' · '+p.tags.join('/'):''}</div>
       </div>
-    </div>`;
+    </div><div class="mgr-expand" id="mex-${i}"></div>`;
   }).join('');
 
-  // Restore detail
+  // Restore expand
+  if(currentDetailIndex>=0&&filteredIdx.includes(currentDetailIndex))renderDetail(currentDetailIndex);
+  // Batch panel
   if(batchMode)renderBatchDetail();
-  else if(currentDetailIndex>=0&&filteredIdx.includes(currentDetailIndex))renderDetail(currentDetailIndex);
-  else showEmptyDetail();
 }
 
 let batchMode=false;
-let batchTags=new Set();  // tags user selected in batch panel
-let batchLoc='';          // location user selected in batch panel
+let batchTags=new Set();
+let batchLoc='';
 
 function toggleBatchMode(){
   batchMode=!batchMode;
   batchTags.clear();batchLoc='';
   const btn=document.getElementById('batchModeBtn');
-  if(batchMode){btn.textContent='退出批量处理';btn.classList.add('btn-p');renderBatchDetail()}
-  else{btn.textContent='启用批量处理';btn.classList.remove('btn-p');
-    if(currentDetailIndex>=0)renderDetail(currentDetailIndex);else showEmptyDetail()}
+  const bp=document.getElementById('batchPanel');
+  if(batchMode){btn.textContent='退出批量处理';btn.classList.add('btn-p');bp.classList.remove('hidden');renderBatchDetail()}
+  else{btn.textContent='启用批量处理';btn.classList.remove('btn-p');bp.classList.add('hidden');bp.innerHTML=''}
 }
 
 function showEmptyDetail(){
-  if(batchMode){renderBatchDetail();return}
+  if(currentDetailIndex>=0){
+    const panel=document.getElementById('mex-'+currentDetailIndex);
+    if(panel){panel.classList.remove('open');panel.innerHTML=''}
+    const row=document.getElementById('mr-'+currentDetailIndex);
+    if(row)row.classList.remove('active');
+  }
   currentDetailIndex=-1;
-  const d=document.getElementById('mgrDetail');
-  d.classList.add('empty');
-  d.innerHTML='← 从左侧选择一张照片进行编辑';
 }
 
 function selectDetail(i,e){
-  if(batchMode)return; // in batch mode clicking a row does nothing special
+  if(batchMode)return;
+  // Close previous
+  if(currentDetailIndex>=0&&currentDetailIndex!==i){
+    const oldPanel=document.getElementById('mex-'+currentDetailIndex);
+    if(oldPanel){oldPanel.classList.remove('open');oldPanel.innerHTML=''}
+    const oldRow=document.getElementById('mr-'+currentDetailIndex);
+    if(oldRow)oldRow.classList.remove('active');
+  }
+  // Toggle same
+  if(currentDetailIndex===i){showEmptyDetail();return}
+
   currentDetailIndex=i;
-  document.querySelectorAll('.mgr-row').forEach(r=>r.classList.remove('active'));
-  if(e&&e.currentTarget)e.currentTarget.classList.add('active');
+  const row=document.getElementById('mr-'+i);
+  if(row)row.classList.add('active');
   renderDetail(i);
 }
 
 function renderBatchDetail(){
   refreshTagPools();
-  const d=document.getElementById('mgrDetail');
-  d.classList.remove('empty');
-  const allTags=getAllTags();
-  const allLocs=getAllLocs();
+  const d=document.getElementById('batchPanel');
+  const allTags=getAllTags(),allLocs=getAllLocs();
 
   const tagChips=allTags.map(t=>`<span class="chip${batchTags.has(t)?' active':''}" onclick="toggleBatchTag('${esc(t)}')">${t}</span>`).join('');
   const uniqueBatchTags=[...batchTags].filter(t=>!allTags.includes(t));
@@ -652,43 +657,39 @@ function renderBatchDetail(){
   const locChips=allLocs.map(l=>`<span class="chip${l===batchLoc?' single-active':''}" onclick="toggleBatchLoc('${esc(l)}')">${l}</span>`).join('');
   const uniqueLocChip=batchLoc&&!allLocs.includes(batchLoc)?`<span class="chip single-active" onclick="toggleBatchLoc('${esc(batchLoc)}')">${batchLoc}</span>`:'';
 
-  d.innerHTML=`
-    <div style="background:var(--accent-s);border:1px solid var(--accent-d);padding:.8rem 1rem;border-radius:var(--r);margin-bottom:1rem">
-      <div style="font-weight:500;color:var(--accent);margin-bottom:.2rem">🎯 批量处理模式</div>
-      <div style="font-size:.78rem;color:var(--dim)">左侧勾选照片（<strong id="batchSelCountInline" style="color:var(--accent)">${selectedIndices.size}</strong> 张已选），在此配置后点击下方各操作按钮。</div>
+  d.innerHTML=`<div class="card" style="margin-bottom:0;border-color:var(--accent-d)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+      <h2 style="margin:0">🎯 批量处理 <small style="font-weight:300;color:var(--dim)">（已选 <strong style="color:var(--accent)" id="batchSelCountInline">${selectedIndices.size}</strong> 张）</small></h2>
     </div>
 
-    <h3 style="margin-top:0">① 批量添加标签</h3>
-    <p class="hint">选中下方标签（可多选），然后点"应用"。已有此标签的照片跳过。</p>
-    <div class="chip-picker">${tagChips}${uniqueTagChips}<span class="chip chip-add" onclick="addBatchTag()">+ 新建</span></div>
-    <div style="margin-top:.5rem"><button class="btn btn-sm btn-p" onclick="applyBatchAddTags()">应用（添加这些标签到选中照片）</button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <h3 style="margin-top:0">① 添加标签</h3>
+        <div class="chip-picker">${tagChips}${uniqueTagChips}<span class="chip chip-add" onclick="addBatchTag()">+ 新建</span></div>
+        <div style="margin-top:.4rem"><button class="btn btn-sm btn-p" onclick="applyBatchAddTags()">应用</button></div>
 
-    <h3>② 批量移除标签</h3>
-    <p class="hint">从选中照片中移除指定的标签，未勾选的照片不受影响。</p>
-    <div id="batchRemoveTagChips"></div>
-    <div style="margin-top:.5rem"><button class="btn btn-sm" onclick="applyBatchRemoveTags()">应用（从选中照片移除勾选的标签）</button></div>
+        <h3>② 移除标签</h3>
+        <div id="batchRemoveTagChips"></div>
+        <div style="margin-top:.4rem"><button class="btn btn-sm" onclick="applyBatchRemoveTags()">应用</button></div>
 
-    <h3>③ 批量修改地点</h3>
-    <p class="hint">选一个地点（再次点击同地点取消选择），然后点"修改地点"。</p>
-    <div class="chip-picker">${locChips}${uniqueLocChip}<span class="chip chip-add" onclick="addBatchLoc()">+ 新建</span></div>
-    <div style="margin-top:.5rem"><button class="btn btn-sm btn-p" onclick="applyBatchSetLoc()">修改地点</button> <button class="btn btn-sm btn-danger" onclick="applyBatchClearLoc()">清除地点</button></div>
+        <h3>③ 修改地点</h3>
+        <div class="chip-picker">${locChips}${uniqueLocChip}<span class="chip chip-add" onclick="addBatchLoc()">+ 新建</span></div>
+        <div style="margin-top:.4rem"><button class="btn btn-sm btn-p" onclick="applyBatchSetLoc()">修改地点</button> <button class="btn btn-sm btn-danger" onclick="applyBatchClearLoc()">清除</button></div>
+      </div>
+      <div>
+        <h3 style="margin-top:0">④ 修改时间</h3>
+        <div class="row"><div class="field"><input type="text" id="batchDateInput" placeholder="如：2024-06"></div>
+        <div style="align-self:flex-end"><button class="btn btn-sm btn-p" onclick="applyBatchSetDate()">修改</button></div></div>
 
-    <h3>④ 批量修改时间</h3>
-    <p class="hint">格式：2024 或 2024-06，留空则清除。</p>
-    <div class="row"><div class="field"><input type="text" id="batchDateInput" placeholder="如：2024-06"></div>
-    <div style="align-self:flex-end;display:flex;gap:.3rem"><button class="btn btn-sm btn-p" onclick="applyBatchSetDate()">修改时间</button></div></div>
+        <h3>⑤ 移动</h3>
+        <div class="row"><div class="field"><select id="batchMoveSel">${getFolderOptions()}</select></div>
+        <div style="align-self:flex-end"><button class="btn btn-sm btn-p" onclick="applyBatchMove()">移动</button></div></div>
 
-    <h3>⑤ 批量移动</h3>
-    <p class="hint">移动到其他 COS 文件夹（会在 COS 上实际搬移文件，验证后删除原文件）。</p>
-    <div class="row"><div class="field"><select id="batchMoveSel">${getFolderOptions()}</select></div>
-    <div style="align-self:flex-end"><button class="btn btn-sm btn-p" onclick="applyBatchMove()">移动到此文件夹</button></div></div>
-
-    <h3 style="color:var(--red)">⑥ 批量删除</h3>
-    <p class="hint">从网站移除并删除 COS 文件，不可恢复。</p>
-    <div><button class="btn btn-sm btn-danger" onclick="applyBatchDelete()">删除选中的 ${selectedIndices.size} 张</button></div>
-  `;
-
-  // Now render the remove-tag chips based on what's currently in selected photos
+        <h3 style="color:var(--red)">⑥ 删除</h3>
+        <button class="btn btn-sm btn-danger" onclick="applyBatchDelete()">删除选中的 ${selectedIndices.size} 张</button>
+      </div>
+    </div>
+  </div>`;
   renderBatchRemoveTagChips();
 }
 
@@ -801,30 +802,25 @@ async function applyBatchDelete(){
 
 function renderDetail(i){
   const p=DATA.photos[i];
-  const d=document.getElementById('mgrDetail');
-  d.classList.remove('empty');
+  const d=document.getElementById('mex-'+i);
+  if(!d)return;
 
-  // EXIF display
   let exifHtml='';
   if(p.exif&&p.exif!==false){
     const parts=[p.exif.make,p.exif.model,p.exif.aperture,p.exif.shutter,p.exif.iso?'ISO '+p.exif.iso:'',p.exif.focal].filter(Boolean);
     if(parts.length)exifHtml=`<div style="font-size:.78rem;color:var(--dim);margin:.5rem 0;padding:.4rem .6rem;background:var(--bg3);border-radius:var(--r)">📷 ${parts.join(' · ')}</div>`;
   }
 
-  // Tag chips — keep stable alphabetical order from snapshot, visual state only
   const photoTags=p.tags||[];
   const allTags=getAllTags();
   const photoTagSet=new Set(photoTags);
   const tagChips=allTags.map(t=>`<span class="chip${photoTagSet.has(t)?' active':''}" onclick="togglePhotoTag(${i},'${esc(t)}')">${t}</span>`).join('');
-  // Tags unique to this photo (not yet in global snapshot) — show at the end
   const uniqueTags=photoTags.filter(t=>!allTags.includes(t));
   const uniqueChips=uniqueTags.map(t=>`<span class="chip active" onclick="togglePhotoTag(${i},'${esc(t)}')">${t}</span>`).join('');
 
-  // Location chips (single-select) — stable alphabetical order
   const allLocs=getAllLocs();
   const locSet=new Set(allLocs);
   const locChips=allLocs.map(l=>`<span class="chip${l===p.location?' single-active':''}" onclick="togglePhotoLoc(${i},'${esc(l)}')">${l}</span>`).join('');
-  // Unique location
   const uniqueLocChip=p.location&&!locSet.has(p.location)?`<span class="chip single-active" onclick="togglePhotoLoc(${i},'${esc(p.location)}')">${p.location}</span>`:'';
 
   const exifDt=p.exif&&p.exif.datetime?p.exif.datetime:'';
@@ -855,6 +851,7 @@ function renderDetail(i){
       <div style="margin-top:.5rem"><button class="btn btn-sm btn-danger" onclick="delPhoto(${i})">删除这张照片</button></div>
     </div>
   `;
+  d.classList.add('open');
 }
 
 function getFolderOptions(){if(!foldersList.length)return'<option value="photo/">photo/</option>';return foldersList.map(f=>`<option value="${f}">${f}</option>`).join('')}
@@ -930,7 +927,7 @@ function updateSelCount(){
   if(inline)inline.textContent=selectedIndices.size;
   renderBatchRemoveTagChips();
   // Update the delete button count in batch panel
-  const delBtn=document.querySelector('#mgrDetail button.btn-danger');
+  const delBtn=document.querySelector('#batchPanel button.btn-danger');
   if(delBtn&&batchMode&&delBtn.textContent.includes('删除选中'))delBtn.textContent=`删除选中的 ${selectedIndices.size} 张`;
 }
 
