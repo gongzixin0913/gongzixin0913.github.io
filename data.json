@@ -25,7 +25,9 @@
       "title": "长江大桥 (4)",
       "location": "长沙",
       "date": "2024-01",
-      "tags": [],
+      "tags": [
+        "光影"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
@@ -871,7 +873,7 @@
     {
       "file": "/photo/风光/1776339879642_DSCF3245.JPG",
       "title": "DSCF3245",
-      "location": "武汉",
+      "location": "长沙",
       "date": "2024-01",
       "tags": [],
       "notes": "",
@@ -929,7 +931,9 @@
       "title": "DSCF2155",
       "location": "上海",
       "date": "2023-10",
-      "tags": [],
+      "tags": [
+        "光影"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
@@ -1057,23 +1061,6 @@
         "datetime": "2023:10:03 15:21:54"
       },
       "tall": true
-    },
-    {
-      "file": "/photo/风光/1776339872343_DSCF1826.JPG",
-      "title": "DSCF1826",
-      "location": "南京",
-      "date": "2023-10",
-      "tags": [],
-      "notes": "",
-      "exif": {
-        "make": "FUJIFILM",
-        "model": "X-T30 II",
-        "aperture": "",
-        "shutter": "1/250s",
-        "iso": "2000",
-        "focal": "50mm",
-        "datetime": "2023:10:03 15:16:40"
-      }
     },
     {
       "file": "/photo/风光/1776339871560_DSCF1823.JPG",
@@ -1394,7 +1381,9 @@
       "title": "DSCF0046",
       "location": "乌镇",
       "date": "2023-08",
-      "tags": [],
+      "tags": [
+        "城市建筑"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
@@ -1530,7 +1519,10 @@
       "title": "Collage_20230829_230605",
       "location": "乌镇",
       "date": "2023-08",
-      "tags": [],
+      "tags": [
+        "城市建筑",
+        "光影"
+      ],
       "notes": "",
       "exif": false,
       "tall": true
@@ -2645,7 +2637,9 @@
       "title": "DSCF9467",
       "location": "上海",
       "date": "2023-08",
-      "tags": [],
+      "tags": [
+        "城市建筑"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
@@ -2740,7 +2734,9 @@
       "title": "DSCF1642",
       "location": "南京",
       "date": "2023-10",
-      "tags": [],
+      "tags": [
+        "城市建筑"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
@@ -3114,7 +3110,9 @@
       "title": "_DSF0664",
       "location": "上海",
       "date": "2023-09",
-      "tags": [],
+      "tags": [
+        "旅拍"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
@@ -3190,7 +3188,9 @@
       "title": "_DSF4730",
       "location": "四川",
       "date": "2024-01",
-      "tags": [],
+      "tags": [
+        "光影"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
@@ -3910,7 +3910,9 @@
       "title": "DSCF4079",
       "location": "四川",
       "date": "2024-01",
-      "tags": [],
+      "tags": [
+        "婚庆"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
@@ -3927,7 +3929,9 @@
       "title": "DSCF4055",
       "location": "四川",
       "date": "2024-01",
-      "tags": [],
+      "tags": [
+        "婚庆"
+      ],
       "notes": "",
       "exif": {
         "make": "FUJIFILM",
