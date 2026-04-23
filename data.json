@@ -1,6 +1,26 @@
 {
   "photos": [
     {
+      "file": "/photo/人像/1776934338556_水边日落.jpg",
+      "title": "水边日落",
+      "location": "南京",
+      "date": "2026-04",
+      "tags": [
+        "古装"
+      ],
+      "notes": "",
+      "exif": {
+        "make": "Xiaomi",
+        "model": "Xiaomi 15",
+        "aperture": "f/2",
+        "shutter": "1/168s",
+        "iso": "50",
+        "focal": "9mm",
+        "datetime": "2026:04:18 17:49:29"
+      },
+      "wide": true
+    },
+    {
       "file": "/photo/风光/1776339912782_自然之画.JPG",
       "title": "自然之画",
       "location": "贵州",
