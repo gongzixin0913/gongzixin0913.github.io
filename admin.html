@@ -90,6 +90,9 @@
 .chip:hover{border-color:var(--border2);color:var(--text)}
 .chip.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:500}
 .chip.single-active{background:var(--green);color:#000;border-color:var(--green);font-weight:500}
+.chip.exclude{background:rgba(239,83,80,.12);color:var(--red);border-color:var(--red);text-decoration:line-through}
+.chip.special{border-style:dashed;color:var(--yellow);border-color:rgba(255,193,7,.4)}
+.chip.special.active{background:rgba(255,193,7,.15);border-style:solid}
 .chip-add{color:var(--accent);border-style:dashed;border-color:var(--accent-d)}
 .chip-add:hover{background:var(--accent-s)}
 .chip-input{display:inline-flex;align-items:center;gap:.2rem}
@@ -252,11 +255,11 @@
 
         <div class="row" style="margin-bottom:.6rem">
           <div class="field" style="min-width:90px;flex:.5"><label>分类/文件夹</label><select id="filterCat" onchange="renderManageList()"><option value="">全部</option></select></div>
-          <div class="field" style="min-width:90px;flex:.5"><label>标签</label><select id="filterTag" onchange="renderManageList()"><option value="">全部</option></select></div>
-          <div class="field" style="min-width:90px;flex:.5"><label>地点</label><select id="filterLoc" onchange="renderManageList()"><option value="">全部</option></select></div>
           <div class="field" style="min-width:80px;flex:.4"><label>排序</label><select id="editSort" onchange="renderManageList()"><option value="newest">最新优先</option><option value="oldest">最早优先</option></select></div>
-          <div style="flex-shrink:0;align-self:flex-end"><button class="btn btn-sm" onclick="clearFilters()">清除</button></div>
+          <div style="flex-shrink:0;align-self:flex-end"><button class="btn btn-sm" onclick="clearFilters()">清除所有筛选</button></div>
         </div>
+        <div class="field" style="margin-bottom:.5rem"><label>标签筛选 <small style="color:var(--muted)">(点击=包含, 再点=排除, 再点=取消)</small></label><div class="chip-picker" id="filterTagChips"></div></div>
+        <div class="field" style="margin-bottom:.5rem"><label>地点筛选</label><div class="chip-picker" id="filterLocChips"></div></div>
         <div class="hint" id="filterInfo" style="margin-bottom:.6rem"></div>
 
         <div class="mgr-layout">
@@ -515,38 +518,73 @@ function getAllTags(){if(cachedTagPool===null)refreshTagPools();return cachedTag
 function getAllLocs(){if(cachedLocPool===null)refreshTagPools();return cachedLocPool}
 
 let filteredIdx=[];
+let filterIncTags=new Set(), filterExcTags=new Set();
+let filterIncLocs=new Set(), filterExcLocs=new Set();
+let filterNoTag=false, filterNoLoc=false;
 
 function populateFilters(){
-  const cats=new Set(),tags=new Set(),locs=new Set();
-  DATA.photos.forEach(p=>{cats.add(getCat(p));(p.tags||[]).forEach(t=>tags.add(t));if(p.location)locs.add(p.location)});
-  const pop=(id,items)=>{const sel=document.getElementById(id),cur=sel.value;sel.innerHTML=`<option value="">全部</option>`+[...items].sort().map(v=>`<option value="${v}"${v===cur?' selected':''}>${v}</option>`).join('')};
-  pop('filterCat',cats);pop('filterTag',tags);pop('filterLoc',locs);
+  const cats=new Set();
+  DATA.photos.forEach(p=>cats.add(getCat(p)));
+  const catSel=document.getElementById('filterCat'),curCat=catSel.value;
+  catSel.innerHTML=`<option value="">全部</option>`+[...cats].sort().map(v=>`<option value="${v}"${v===curCat?' selected':''}>${v}</option>`).join('');
 }
 
-function clearFilters(){['filterCat','filterTag','filterLoc'].forEach(id=>document.getElementById(id).value='');document.getElementById('editSort').value='newest';renderManageList()}
+function renderFilterChips(){
+  const allTags=getAllTags(),allLocs=getAllLocs();
+  const tagEl=document.getElementById('filterTagChips');
+  let tagHtml=`<span class="chip special${filterNoTag?' active':''}" onclick="toggleFilterNoTag()">无标签</span>`;
+  tagHtml+=allTags.map(t=>{
+    let cls='chip';if(filterIncTags.has(t))cls+=' active';else if(filterExcTags.has(t))cls+=' exclude';
+    return`<span class="${cls}" onclick="cycleFilterTag('${esc(t)}')">${filterExcTags.has(t)?'✕ '+t:t}</span>`;
+  }).join('');
+  tagEl.innerHTML=tagHtml;
+
+  const locEl=document.getElementById('filterLocChips');
+  let locHtml=`<span class="chip special${filterNoLoc?' active':''}" onclick="toggleFilterNoLoc()">无地点</span>`;
+  locHtml+=allLocs.map(l=>{
+    let cls='chip';if(filterIncLocs.has(l))cls+=' active';else if(filterExcLocs.has(l))cls+=' exclude';
+    return`<span class="${cls}" onclick="cycleFilterLoc('${esc(l)}')">${filterExcLocs.has(l)?'✕ '+l:l}</span>`;
+  }).join('');
+  locEl.innerHTML=locHtml;
+}
+
+function cycleFilterTag(t){if(filterIncTags.has(t)){filterIncTags.delete(t);filterExcTags.add(t)}else if(filterExcTags.has(t)){filterExcTags.delete(t)}else{filterIncTags.add(t);filterNoTag=false}renderManageList()}
+function cycleFilterLoc(l){if(filterIncLocs.has(l)){filterIncLocs.delete(l);filterExcLocs.add(l)}else if(filterExcLocs.has(l)){filterExcLocs.delete(l)}else{filterIncLocs.add(l);filterNoLoc=false}renderManageList()}
+function toggleFilterNoTag(){filterNoTag=!filterNoTag;if(filterNoTag){filterIncTags.clear();filterExcTags.clear()}renderManageList()}
+function toggleFilterNoLoc(){filterNoLoc=!filterNoLoc;if(filterNoLoc){filterIncLocs.clear();filterExcLocs.clear()}renderManageList()}
+
+function clearFilters(){
+  document.getElementById('filterCat').value='';document.getElementById('editSort').value='newest';
+  filterIncTags.clear();filterExcTags.clear();filterIncLocs.clear();filterExcLocs.clear();
+  filterNoTag=false;filterNoLoc=false;renderManageList();
+}
 
 function renderManageList(){
-  refreshTagPools(); // rebuild snapshot
+  refreshTagPools();
   populateFilters();
+  renderFilterChips();
   selectedIndices.clear();updateSelCount();
   document.getElementById('editSelectAll').checked=false;
   document.getElementById('editCount').textContent=`(${DATA.photos.length})`;
 
   const fCat=document.getElementById('filterCat').value;
-  const fTag=document.getElementById('filterTag').value;
-  const fLoc=document.getElementById('filterLoc').value;
   const sortDir=document.getElementById('editSort').value;
 
   filteredIdx=[];
   DATA.photos.forEach((p,i)=>{
     if(fCat&&getCat(p)!==fCat)return;
-    if(fTag&&!(p.tags||[]).includes(fTag))return;
-    if(fLoc&&p.location!==fLoc)return;
+    const pt=p.tags||[];
+    if(filterNoTag&&pt.length>0)return;
+    if(filterIncTags.size&&![...filterIncTags].every(t=>pt.includes(t)))return;
+    if(filterExcTags.size&&[...filterExcTags].some(t=>pt.includes(t)))return;
+    if(filterNoLoc&&p.location)return;
+    if(filterIncLocs.size&&!filterIncLocs.has(p.location))return;
+    if(filterExcLocs.size&&filterExcLocs.has(p.location))return;
     filteredIdx.push(i);
   });
   filteredIdx.sort((a,b)=>{const da=DATA.photos[a].date||'',db=DATA.photos[b].date||'';return sortDir==='newest'?db.localeCompare(da):da.localeCompare(db)});
 
-  const hasF=fCat||fTag||fLoc;
+  const hasF=fCat||filterIncTags.size||filterExcTags.size||filterIncLocs.size||filterExcLocs.size||filterNoTag||filterNoLoc;
   document.getElementById('filterInfo').textContent=hasF?`筛选: ${filteredIdx.length} / ${DATA.photos.length}`:'';
   document.getElementById('mgrListCount').textContent=`${filteredIdx.length} 张`;
 
